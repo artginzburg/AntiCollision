@@ -17,7 +17,7 @@ const stable_color = new Vector3(0, 255, 0);
 const unstable_color = new Vector3(255, 0, 0);
 
 const minScale = 0.1
-let wheelPos = 0.1 
+let wheelPos = 0.1
 let scale = 0.35
 const maxScale = 3
 window.addEventListener('wheel', ({ deltaY }) => {
@@ -131,14 +131,14 @@ function animate(delta) {
   updatePos(balls, speedDownFactor);
 
   let center_of_mass = new Vector2(0, 0);
-  
+
   for (const b of balls) {
     const stable_ratio =
       ok_count > 199 ? 1.0 : Math.min(1.0, b.stableCount / 255.0);
     const color = stable_color
       .mul(stable_ratio)
       .add(unstable_color.mul(1.0 - stable_ratio));
-  
+
     let r = b.r;
 
     if (speedDownFactor > 1) r = b.r;
@@ -153,7 +153,7 @@ function animate(delta) {
   ctx.save()
   ctx.scale(scale, scale)
   ctx.translate(-center_of_mass.x + $canvas.width * 0.5 * 1 / scale, -center_of_mass.y + $canvas.height * 0.5 * 1 / scale)
-  
+
   balls.forEach(b => b.draw(ctx))
   ctx.fillStyle = 'purple'
   ctx.beginPath()
@@ -161,7 +161,7 @@ function animate(delta) {
   ctx.fill()
   ctx.closePath()
   ctx.restore()
-  
+
   iterations++;
 
   requestAnimationFrame(animate);
