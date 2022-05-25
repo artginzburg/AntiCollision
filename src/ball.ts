@@ -7,12 +7,12 @@ export class Ball {
   position: Vector2;
   velocity: Vector2;
   r: number;
-  color: Vector3;
+  color: Vector3 | undefined;
 
   position_history: Vector2[];
   current_idx: number;
 
-  stable: boolean;
+  stable: boolean | undefined;
   stableCount: number;
 
   constructor(x: number, y: number, arg_r: number) {
@@ -34,7 +34,7 @@ export class Ball {
   }
 
   getVA() {
-    const va = [];
+    const va: Ball[] = [];
     for (let i = 0; i < max_history; ++i) {
       const actual_idx = (i + this.current_idx) % max_history;
       const ratio = i / max_history;
@@ -47,7 +47,7 @@ export class Ball {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.color.toRGB()
+    ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)
     ctx.fill()

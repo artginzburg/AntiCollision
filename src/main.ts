@@ -2,8 +2,8 @@ import { Ball } from "./ball";
 import { getRange, getUnder } from "./random";
 import { Vector2, Vector3 } from "./vector";
 
-const $canvas = document.querySelector("canvas");
-const ctx = $canvas.getContext("2d");
+const $canvas = document.querySelector("canvas")!;
+const ctx = $canvas.getContext("2d")!;
 
 $canvas.width = window.innerWidth;
 $canvas.height = window.innerHeight;
@@ -24,7 +24,7 @@ window.addEventListener('wheel', ({ deltaY }) => {
   updateScale(-deltaY / 5000)
 })
 
-let initialDistance = null
+let initialDistance: number | null = null
 
 window.addEventListener('touchstart', ({ touches }) => {
   if (touches.length > 1) {
@@ -101,6 +101,7 @@ window.addEventListener("mousemove", (event) => {
 
 requestAnimationFrame(animate);
 
+// @ts-expect-error `delta` is unused and thus has any type. Leaving it here as I don't know what it was planned for.
 function animate(delta) {
   if (waitingSpeedFactor != speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
