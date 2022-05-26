@@ -5,13 +5,14 @@ import { Vector2, Vector3 } from './vector';
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
 
-$canvas.width = window.innerWidth;
-$canvas.height = window.innerHeight;
+handleResize()
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', handleResize)
+
+function handleResize() {
   $canvas.width = window.innerWidth;
   $canvas.height = window.innerHeight;
-})
+}
 
 const stable_color = new Vector3(0, 255, 0);
 const unstable_color = new Vector3(255, 0, 0);
@@ -87,9 +88,11 @@ for (let i = 0; i < nBalls; i++) {
   );
 }
 
-addKeyListener('Space', () => {
+addKeyListener('Space', toggleSlowMotion);
+
+function toggleSlowMotion() {
   speedDownFactorGoal = speedDownFactor === 1 ? 10.0 : 1.0;
-});
+}
 
 let ok_count = 0;
 
