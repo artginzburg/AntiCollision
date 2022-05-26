@@ -1,0 +1,46 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [
+    "dist"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "project": "./tsconfig.json"
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "extends": [
+    "plugin:@typescript-eslint/strict"
+  ],
+  "rules": {
+    "quotes": [
+      "warn",
+      "single"
+    ], // forces single quotes (' instead of " or `)
+    "@typescript-eslint/no-var-requires": "off", // allows requiring instead of importing if needed
+    "prefer-const": "error",
+    "@typescript-eslint/await-thenable": "warn",
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "@typescript-eslint/consistent-type-exports": [
+      "warn",
+      {
+        "fixMixedExportsWithInlineTypeSpecifier": true
+      }
+    ],
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-unnecessary-condition": "off",
+    "no-unused-vars": "off",
+    "eqeqeq": "warn",
+    "no-shadow": "error"
+  }
+}

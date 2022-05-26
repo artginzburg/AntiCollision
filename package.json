@@ -7,9 +7,13 @@
   "private": true,
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html --public-url=./ --no-source-maps"
+    "build": "parcel build src/index.html --public-url=./ --no-source-maps",
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-clean-dist": "^0.0.6",
     "typescript": "^4.2.4"

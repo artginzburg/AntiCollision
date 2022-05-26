@@ -1,9 +1,9 @@
-import { Ball } from "./ball";
-import { getRange, getUnder } from "./random";
-import { Vector2, Vector3 } from "./vector";
+import { Ball } from './ball';
+import { getRange, getUnder } from './random';
+import { Vector2, Vector3 } from './vector';
 
-const $canvas = document.querySelector("canvas")!;
-const ctx = $canvas.getContext("2d")!;
+const $canvas = document.querySelector('canvas')!;
+const ctx = $canvas.getContext('2d')!;
 
 $canvas.width = window.innerWidth;
 $canvas.height = window.innerHeight;
@@ -87,14 +87,14 @@ for (let i = 0; i < nBalls; i++) {
   );
 }
 
-addKeyListener("Space", () => {
-  speedDownFactorGoal = speedDownFactor == 1 ? 10.0 : 1.0;
+addKeyListener('Space', () => {
+  speedDownFactorGoal = speedDownFactor === 1 ? 10.0 : 1.0;
 });
 
 let ok_count = 0;
 
 const mousePos = { x: 0, y: 0 };
-window.addEventListener("mousemove", (event) => {
+window.addEventListener('mousemove', (event) => {
   mousePos.x = event.x;
   mousePos.y = event.y;
 });
@@ -103,7 +103,7 @@ requestAnimationFrame(animate);
 
 // @ts-expect-error `delta` is unused and thus has any type. Leaving it here as I don't know what it was planned for.
 function animate(delta) {
-  if (waitingSpeedFactor != speedDownFactorGoal) {
+  if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }
 
@@ -168,23 +168,23 @@ function animate(delta) {
   requestAnimationFrame(animate);
 }
 
-function update(balls: Ball[], speed: number) {
+function update(ballsToUpdate: Ball[], speed: number) {
   let stable = true;
 
-  const nBalls = balls.length;
+  const nBallsForUpdate = ballsToUpdate.length;
   const attraction_force_bug = 0.01;
   const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5);
 
-  for (let i = 0; i < nBalls; i++) {
-    const current_ball = balls[i];
+  for (let i = 0; i < nBallsForUpdate; i++) {
+    const current_ball = ballsToUpdate[i];
     // Attraction to center
     const to_center = center_position.sub(current_ball.position);
     current_ball.velocity = current_ball.velocity.add(
       to_center.mul(attraction_force_bug)
     );
 
-    for (let k = i + 1; k < nBalls; k++) {
-      const collider = balls[k];
+    for (let k = i + 1; k < nBallsForUpdate; k++) {
+      const collider = ballsToUpdate[k];
       const collide_vec = current_ball.position.sub(collider.position);
       const dist = Math.sqrt(
         collide_vec.x * collide_vec.x + collide_vec.y * collide_vec.y
@@ -210,16 +210,16 @@ function update(balls: Ball[], speed: number) {
     }
   }
 
-  for (let i = 0; i < nBalls; i++) {
-    if (balls[i].stable) balls[i].stableCount++;
-    else balls[i].stableCount = 0;
+  for (let i = 0; i < nBallsForUpdate; i++) {
+    if (ballsToUpdate[i].stable) ballsToUpdate[i].stableCount++;
+    else ballsToUpdate[i].stableCount = 0;
   }
 
   return stable;
 }
 
-function getBallAt(position: Vector2, balls: Ball[]) {
-  for (const ball of balls) {
+function getBallAt(position: Vector2, ballsForGet: Ball[]) {
+  for (const ball of ballsForGet) {
     const v = position.sub(ball.position);
     const dist = Math.sqrt(v.x * v.x + v.y * v.y);
     if (dist < ball.r) {
@@ -231,13 +231,13 @@ function getBallAt(position: Vector2, balls: Ball[]) {
 }
 
 function updatePos(
-  balls: Ball[],
-  speedDownFactor: number,
+  ballsToUpdatePos: Ball[],
+  speedDownFactorForUpdatePos: number,
 ) {
   const dt = 0.016;
-  for (const currentBall of balls) {
+  for (const currentBall of ballsToUpdatePos) {
     currentBall.position = currentBall.position.add(
-      currentBall.velocity.mul(dt / speedDownFactor)
+      currentBall.velocity.mul(dt / speedDownFactorForUpdatePos)
     );
   }
 
@@ -257,7 +257,7 @@ function normalize(v: Vector2) {
 }
 
 function addKeyListener(key: string, callback: () => void) {
-  window.addEventListener("keyup", (event) => {
-    if (event.code == key) callback();
+  window.addEventListener('keyup', (event) => {
+    if (event.code === key) callback();
   });
 }
