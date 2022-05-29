@@ -47,6 +47,7 @@ export class Ball {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    this.drawTrail(ctx);
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)
@@ -54,4 +55,54 @@ export class Ball {
     ctx.closePath()
     // console.log(this.position)
   }
+
+  private drawTrail(ctx: CanvasRenderingContext2D) {
+    const shape: Vector2[] = [];
+    this.position_history.forEach((historyItem) => {
+      shape.push(historyItem);
+      // ctx.strokeRect(historyItem.x - 1, historyItem.y - 1, 1, 1); // The only working thing here :D
+    });
+
+    const distances = shape.map((point, pointIndex) => {
+      const previousPoint = shape[pointIndex - 1] ?? shape[shape.length - 1];
+
+      const distance = point.sub(previousPoint);
+
+      return distance;
+    })
+
+    const totalDistances = distances.map((distance) => Math.abs(distance.x + distance.y));
+
+    const maximumDistance = Math.max(...totalDistances);
+    const minimumDistance = Math.min(...totalDistances);
+
+    const averageDistance = (maximumDistance + minimumDistance) / 2;
+
+    ctx.beginPath()
+
+    shape.forEach((point, pointIndex) => {
+      const previousPoint = shape[pointIndex - 1] ?? shape[shape.length - 1];
+
+      const distance = point.sub(previousPoint);
+
+      const absoluteDistance = Math.abs(distance.x + distance.y);
+
+      if (absoluteDistance * 2 < averageDistance) {
+        ctx.lineTo(point.x, point.y);
+      } else {
+        const nextPoint = shape[pointIndex + 1] ?? shape[0];
+        ctx.moveTo(nextPoint.x, nextPoint.y);
+        // ctx.lineTo(nextPoint.x, nextPoint.y);
+      }
+    })
+
+    ctx.closePath()
+
+    // ctx.lineWidth = 1; // Trail width
+    ctx.strokeStyle = stable_color_rgb; // Trail color
+    ctx.stroke();
+  }
 }
+
+const stable_color = new Vector3(0, 255, 0); // TODO dedupe: already exists in main.ts
+const stable_color_rgb = stable_color.toRGB();
