@@ -70,7 +70,10 @@ export class Ball {
     ctx.closePath()
 
     // ctx.lineWidth = 1; // Trail width
-    ctx.strokeStyle = stable_color.toRGBA(0.8); // Trail color
+    const gradient = ctx.createLinearGradient(0, 0, this.position.x, this.position.y);
+    gradient.addColorStop(0, 'transparent');
+    gradient.addColorStop(1, stable_color_rgb);
+    ctx.strokeStyle = gradient; // Trail color
     ctx.stroke();
   }
 }
