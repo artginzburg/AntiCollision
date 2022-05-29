@@ -1,5 +1,6 @@
 import { Ball } from './ball';
 import { getRange, getUnder } from './random';
+import { toggleDrawTraces } from './settings';
 import { Vector2, Vector3 } from './vector';
 
 const $canvas = document.querySelector('canvas')!;
@@ -89,6 +90,7 @@ for (let i = 0; i < nBalls; i++) {
 }
 
 addKeyListener('Space', toggleSlowMotion);
+addKeyListener('a', toggleDrawTraces)
 
 function toggleSlowMotion() {
   speedDownFactorGoal = speedDownFactor === 1 ? 10.0 : 1.0;
@@ -263,6 +265,6 @@ function normalize(v: Vector2) {
 
 function addKeyListener(key: string, callback: () => void) {
   window.addEventListener('keyup', (event) => {
-    if (event.code === key) callback();
+    if (event.code === key || event.key === key) callback();
   });
 }

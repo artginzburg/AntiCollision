@@ -1,4 +1,5 @@
 import { getRange } from './random';
+import { settings } from './settings';
 import { Vector2, Vector3 } from './vector';
 
 const max_history = 100
@@ -50,7 +51,7 @@ export class Ball {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.drawTrace(ctx);
+    if (settings.drawTraces) this.drawTrace(ctx);
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)
