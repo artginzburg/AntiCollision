@@ -38,6 +38,9 @@ export class Ball {
     for (let i = 0; i < max_history; ++i) {
       const actual_idx = (i + this.current_idx) % max_history;
       const ratio = i / max_history;
+      if (!va[i]) {
+        va[i] = {} as Ball;
+      }
       va[i].position = this.position_history[actual_idx];
       const color = ratio * 255;
       va[i].color = new Vector3(0, color, 0);
@@ -47,7 +50,7 @@ export class Ball {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.drawTrail(ctx);
+    this.drawTrace(ctx);
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)
@@ -56,50 +59,18 @@ export class Ball {
     // console.log(this.position)
   }
 
-  private drawTrail(ctx: CanvasRenderingContext2D) {
-    const shape: Vector2[] = [];
-    this.position_history.forEach((historyItem) => {
-      shape.push(historyItem);
-      // ctx.strokeRect(historyItem.x - 1, historyItem.y - 1, 1, 1); // The only working thing here :D
-    });
-
-    const distances = shape.map((point, pointIndex) => {
-      const previousPoint = shape[pointIndex - 1] ?? shape[shape.length - 1];
-
-      const distance = point.sub(previousPoint);
-
-      return distance;
-    })
-
-    const totalDistances = distances.map((distance) => Math.abs(distance.x + distance.y));
-
-    const maximumDistance = Math.max(...totalDistances);
-    const minimumDistance = Math.min(...totalDistances);
-
-    const averageDistance = (maximumDistance + minimumDistance) / 2;
+  private drawTrace(ctx: CanvasRenderingContext2D) {
+    const trace = this.getVA();
 
     ctx.beginPath()
-
-    shape.forEach((point, pointIndex) => {
-      const previousPoint = shape[pointIndex - 1] ?? shape[shape.length - 1];
-
-      const distance = point.sub(previousPoint);
-
-      const absoluteDistance = Math.abs(distance.x + distance.y);
-
-      if (absoluteDistance * 2 < averageDistance) {
-        ctx.lineTo(point.x, point.y);
-      } else {
-        const nextPoint = shape[pointIndex + 1] ?? shape[0];
-        ctx.moveTo(nextPoint.x, nextPoint.y);
-        // ctx.lineTo(nextPoint.x, nextPoint.y);
-      }
+    trace.forEach((ball) => {
+      ctx.lineTo(ball.position.x, ball.position.y);
     })
-
+    ctx.moveTo(trace[0].position.x, trace[0].position.y);
     ctx.closePath()
 
     // ctx.lineWidth = 1; // Trail width
-    ctx.strokeStyle = stable_color_rgb; // Trail color
+    ctx.strokeStyle = stable_color.toRGBA(0.8); // Trail color
     ctx.stroke();
   }
 }

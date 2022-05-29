@@ -20,6 +20,10 @@ export class Vector3 {
   toRGB() {
     return `rgb(${this.x} ${this.y} ${this.z})`
   }
+
+  toRGBA(a: number) {
+    return `rgba(${this.x}, ${this.y}, ${this.z}, ${a})`
+  }
 }
 
 export class Vector2 {
