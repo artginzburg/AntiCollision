@@ -196,6 +196,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
       const minDist = current_ball.r + collider.r;
 
       if (dist < minDist) {
+        // Collision happened.
+        // This also includes the case when the balls are barely touching each other.
         stable = false;
 
         current_ball.stable = false;
