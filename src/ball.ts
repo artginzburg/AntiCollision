@@ -24,13 +24,9 @@ export class Ball {
     this.position = new Vector2(x, y);
     this.velocity = new Vector2(getRange(-4, 4), getRange(-4, 4));
     this.r = r;
-    this.position_history = [];
+    this.position_history = Array(max_history).fill(this.position);
     this.current_idx = 0;
 
-    for (let i = 0; i < max_history; i += 1) {
-      // TODO why not use `Array.fill()` instead of a loop?
-      this.position_history.push(new Vector2(x, y)); // TODO why not use `this.position` instead of `new Vector2(x, y)`?
-    }
     this.stableCount = 0;
   }
 
