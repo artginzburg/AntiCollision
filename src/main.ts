@@ -1,6 +1,6 @@
 import { Ball } from './ball';
 import { getRange, getUnder } from './random';
-import { toggleDrawTraces } from './settings';
+import { settings, toggleDrawTraces } from './settings';
 import { stable_color, unstable_color } from './shared';
 import { Vector2 } from './vector';
 import { enableZoomingFeature, scale } from './zooming';
@@ -172,6 +172,14 @@ function update(ballsToUpdate: Ball[], speed: number) {
         collider.position = collider.position.sub(
           collide_axe.mul(0.5 * (minDist - dist))
         );
+        if (!settings.useAntiCollisionBug) {
+          current_ball.velocity = current_ball.velocity.add(
+            collide_axe.mul(0.5 * (minDist - dist))
+          );
+          collider.velocity = collider.velocity.sub(
+            collide_axe.mul(0.5 * (minDist - dist))
+          );
+        }
       }
     }
   }
