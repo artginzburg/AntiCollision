@@ -67,18 +67,29 @@ export class Ball {
 
   private drawTrace(ctx: CanvasRenderingContext2D) {
     const trace = this.getVA();
+    const farthestTracePointPosition = trace[0].position;
 
     ctx.beginPath()
     trace.forEach((ball) => {
       ctx.lineTo(ball.position.x, ball.position.y);
     })
-    ctx.moveTo(trace[0].position.x, trace[0].position.y);
+    ctx.moveTo(farthestTracePointPosition.x, farthestTracePointPosition.y);
     ctx.closePath()
 
     // ctx.lineWidth = 1; // Trail width
-    const gradient = ctx.createLinearGradient(0, 0, this.position.x, this.position.y);
+    this.applyTraceColor(ctx, farthestTracePointPosition);
+  }
+
+  /**
+   * Known issue: if the ball changes direction rapidly, the trace will "glitch" (disappear) and then redraw normally. This happens because the current implementation of the trace opacity gradient only has two points — end and start: it is a straight line, which cannot represent curved shapes.
+   *
+   * This can be solved by adding more color stops conditionally when the direction change is too rapid, or by creating a separate gradient for each pair of history items, or by forcing the gradient itself to reflect the trace's shape.
+   */
+  private applyTraceColor(ctx: CanvasRenderingContext2D, farthestTracePointPosition: Vector2) {
+    const gradient = ctx.createLinearGradient(farthestTracePointPosition.x, farthestTracePointPosition.y, this.position.x, this.position.y);
     gradient.addColorStop(0, 'transparent');
     gradient.addColorStop(1, stable_color_rgb);
+
     ctx.strokeStyle = gradient; // Trail color
     ctx.stroke();
   }
