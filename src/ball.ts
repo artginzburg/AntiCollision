@@ -6,35 +6,40 @@ const max_history = 100
 
 export class Ball {
   position: Vector2;
-  velocity: Vector2;
-  r: number;
+  public velocity: Vector2;
   color: Vector3 | undefined;
 
-  position_history: Vector2[];
-  current_idx: number;
+  private readonly position_history: Vector2[];
+  private current_idx: number;
 
-  stable: boolean | undefined;
-  stableCount: number;
+  public stable: boolean | undefined;
+  public stableCount: number;
 
-  constructor(x: number, y: number, arg_r: number) {
+  constructor(
+    x: number,
+    y: number,
+    /** Radius */
+    readonly r: number
+  ) {
     this.position = new Vector2(x, y);
     this.velocity = new Vector2(getRange(-4, 4), getRange(-4, 4));
-    this.r = arg_r;
+    this.r = r;
     this.position_history = [];
     this.current_idx = 0;
 
     for (let i = 0; i < max_history; i += 1) {
-      this.position_history.push(new Vector2(x, y));
+      // TODO why not use `Array.fill()` instead of a loop?
+      this.position_history.push(new Vector2(x, y)); // TODO why not use `this.position` instead of `new Vector2(x, y)`?
     }
     this.stableCount = 0;
   }
 
-  save() {
+  public save() {
     this.position_history[this.current_idx] = this.position;
     this.current_idx = ++this.current_idx % max_history;
   }
 
-  getVA() {
+  private getVA() {
     const va: Ball[] = [];
     for (let i = 0; i < max_history; ++i) {
       const actual_idx = (i + this.current_idx) % max_history;
@@ -50,7 +55,7 @@ export class Ball {
     return va;
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     if (settings.drawTraces) this.drawTrace(ctx);
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()

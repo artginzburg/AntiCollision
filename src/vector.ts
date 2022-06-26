@@ -1,47 +1,47 @@
 export class Vector3 {
-  constructor(public x: number, public y: number, public z: number) {}
+  constructor(private readonly x: number, private readonly y: number, private readonly z: number) {}
 
-  add(v: Vector3) {
+  public add(v: Vector3) {
     return new Vector3(this.x + v.x, this.y + v.y, this.z + v.z)
   }
 
-  sub(v: Vector3) {
+  public sub(v: Vector3) {
     return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z)
   }
 
-  mul(v: number) {
+  public mul(v: number) {
     return new Vector3(this.x * v, this.y * v, this.z * v)
   }
 
-  div(v: number) {
+  public div(v: number) {
     return new Vector3(this.x / v, this.y / v, this.z / v)
   }
 
-  toRGB() {
+  public toRGB() {
     return `rgb(${this.x} ${this.y} ${this.z})`
   }
 
-  toRGBA(a: number) {
+  public toRGBA(a: number) {
     return `rgba(${this.x}, ${this.y}, ${this.z}, ${a})`
   }
 }
 
 export class Vector2 {
-  constructor(public x: number, public y: number) {}
+  constructor(readonly x: number, readonly y: number) {}
 
-  add(v: Vector2) {
+  public add(v: Vector2) {
     return new Vector2(this.x + v.x, this.y + v.y)
   }
 
-  sub(v: Vector2) {
+  public sub(v: Vector2) {
     return new Vector2(this.x - v.x, this.y - v.y)
   }
 
-  mul(v: number) {
+  public mul(v: number) {
     return new Vector2(this.x * v, this.y * v)
   }
 
-  div(v: number) {
+  public div(v: number) {
     return new Vector2(this.x / v, this.y / v)
   }
 }
