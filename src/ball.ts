@@ -1,5 +1,6 @@
 import { getRange } from './random';
 import { settings } from './settings';
+import { stable_color_rgb } from './shared';
 import { Vector2, Vector3 } from './vector';
 
 const max_history = 100
@@ -96,6 +97,3 @@ export class Ball {
     ctx.stroke();
   }
 }
-
-const stable_color = new Vector3(0, 255, 0); // TODO dedupe: already exists in main.ts
-const stable_color_rgb = stable_color.toRGB();

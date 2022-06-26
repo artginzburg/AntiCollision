@@ -1,7 +1,8 @@
 import { Ball } from './ball';
 import { getRange, getUnder } from './random';
 import { toggleDrawTraces } from './settings';
-import { Vector2, Vector3 } from './vector';
+import { stable_color, unstable_color } from './shared';
+import { Vector2 } from './vector';
 import { enableZoomingFeature, scale } from './zooming';
 
 const $canvas = document.querySelector('canvas')!;
@@ -15,9 +16,6 @@ function handleResize() {
   $canvas.width = window.innerWidth;
   $canvas.height = window.innerHeight;
 }
-
-const stable_color = new Vector3(0, 255, 0);
-const unstable_color = new Vector3(255, 0, 0);
 
 enableZoomingFeature();
 
