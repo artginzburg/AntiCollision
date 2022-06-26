@@ -39,6 +39,11 @@ export class Ball {
     this.current_idx = ++this.current_idx % max_history;
   }
 
+  /**
+   * Returns the ball history ordered chronologically (unlike {@link Ball.position_history}). That is, `va[0]` is the oldest point in history, and `va[va.length - 1]` is the newest.
+   *
+   * The returned array does not include the current ball state.
+   */
   private getVA() {
     const va: Ball[] = [];
     for (let i = 0; i < max_history; ++i) {
@@ -73,6 +78,7 @@ export class Ball {
     trace.forEach((ball) => {
       ctx.lineTo(ball.position.x, ball.position.y);
     })
+    ctx.lineTo(this.position.x, this.position.y); // Makes the trace path actually end in the center of the ball (otherwise, the trace would be detached from the ball on a higher velocity).
     ctx.moveTo(farthestTracePointPosition.x, farthestTracePointPosition.y);
     ctx.closePath()
 
