@@ -64,10 +64,9 @@ window.addEventListener('mousemove', (event) => {
   mousePos.y = event.y;
 });
 
-requestAnimationFrame(animate);
+window.requestAnimationFrame(animate);
 
-// @ts-expect-error `delta` is unused and thus has any type. Leaving it here as I don't know what it was planned for.
-function animate(delta) {
+function animate(delta: DOMHighResTimeStamp): void {
   if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }
@@ -130,7 +129,7 @@ function animate(delta) {
 
   iterations++;
 
-  requestAnimationFrame(animate);
+  window.requestAnimationFrame(animate);
 }
 
 function update(ballsToUpdate: Ball[], speed: number) {
