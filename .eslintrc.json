@@ -18,6 +18,7 @@
     "plugin:@typescript-eslint/strict"
   ],
   "rules": {
+    "no-multiple-empty-lines": "error",
     "quotes": [
       "warn",
       "single"

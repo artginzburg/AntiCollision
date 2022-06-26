@@ -2,6 +2,7 @@ import { Ball } from './ball';
 import { getRange, getUnder } from './random';
 import { toggleDrawTraces } from './settings';
 import { Vector2, Vector3 } from './vector';
+import { enableZoomingFeature, scale } from './zooming';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -18,46 +19,7 @@ function handleResize() {
 const stable_color = new Vector3(0, 255, 0);
 const unstable_color = new Vector3(255, 0, 0);
 
-const minScale = 0.1
-let wheelPos = 0.1
-let scale = 0.35
-const maxScale = 3
-window.addEventListener('wheel', ({ deltaY }) => {
-  updateScale(-deltaY / 5000)
-})
-
-let initialDistance: number | null = null
-
-window.addEventListener('touchstart', ({ touches }) => {
-  if (touches.length > 1) {
-    initialDistance = Math.sqrt(
-      Math.pow(touches[0].clientX - touches[1].clientX, 2)
-      + Math.pow(touches[0].clientY - touches[1].clientY, 2)
-    )
-  }
-})
-
-window.addEventListener('touchend', () => {
-  initialDistance = null
-})
-
-window.addEventListener('touchmove', ({ touches }) => {
-  if (initialDistance !== null) {
-    const distance = Math.sqrt(
-      Math.pow(touches[0].clientX - touches[1].clientX, 2)
-      + Math.pow(touches[0].clientY - touches[1].clientY, 2)
-    )
-    const diff = distance - initialDistance
-    updateScale(diff / 1000)
-  }
-})
-
-function updateScale(pos: number) {
-  wheelPos += pos
-  if (wheelPos < 0) wheelPos = 0
-  if (wheelPos > 1) wheelPos = 1
-  scale = wheelPos * (maxScale - minScale) + minScale
-}
+enableZoomingFeature();
 
 let speedDownFactor = 1;
 let speedDownCounter = 1;
@@ -104,10 +66,9 @@ window.addEventListener('mousemove', (event) => {
   mousePos.y = event.y;
 });
 
-requestAnimationFrame(animate);
+window.requestAnimationFrame(animate);
 
-// @ts-expect-error `delta` is unused and thus has any type. Leaving it here as I don't know what it was planned for.
-function animate(delta) {
+function animate(delta: DOMHighResTimeStamp): void {
   if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }
@@ -170,7 +131,7 @@ function animate(delta) {
 
   iterations++;
 
-  requestAnimationFrame(animate);
+  window.requestAnimationFrame(animate);
 }
 
 function update(ballsToUpdate: Ball[], speed: number) {
