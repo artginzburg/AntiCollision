@@ -3,6 +3,7 @@ import { getRange, getUnder } from './random';
 import { settings, toggleDrawTraces } from './settings';
 import { stable_color, unstable_color } from './shared';
 import { Vector2 } from './vector';
+import { enableAddBallAtMousePositionFeature } from './addBallAtMousePosition';
 import { enableZoomingFeature, scale } from './zooming';
 
 const $canvas = document.querySelector('canvas')!;
@@ -49,6 +50,8 @@ for (let i = 0; i < nBalls; i++) {
   );
 }
 
+enableAddBallAtMousePositionFeature(balls, getCtxTranslation, minSize, maxSize);
+
 addKeyListener('Space', toggleSlowMotion);
 addKeyListener('a', toggleDrawTraces)
 
@@ -65,6 +68,8 @@ window.addEventListener('mousemove', (event) => {
 });
 
 window.requestAnimationFrame(animate);
+
+let center_of_mass: Vector2;
 
 function animate(delta: DOMHighResTimeStamp): void {
   if (waitingSpeedFactor !== speedDownFactorGoal) {
@@ -95,7 +100,7 @@ function animate(delta: DOMHighResTimeStamp): void {
 
   updatePos(balls, speedDownFactor);
 
-  let center_of_mass = new Vector2(0, 0);
+  center_of_mass = new Vector2(0, 0);
 
   for (const b of balls) {
     const stable_ratio =
@@ -117,7 +122,7 @@ function animate(delta: DOMHighResTimeStamp): void {
   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
   ctx.save()
   ctx.scale(scale, scale)
-  ctx.translate(-center_of_mass.x + $canvas.width * 0.5 * 1 / scale, -center_of_mass.y + $canvas.height * 0.5 * 1 / scale)
+  ctx.translate(...getCtxTranslation())
 
   balls.forEach(b => b.draw(ctx))
   ctx.fillStyle = 'purple'
@@ -130,6 +135,10 @@ function animate(delta: DOMHighResTimeStamp): void {
   iterations++;
 
   window.requestAnimationFrame(animate);
+}
+
+function getCtxTranslation() {
+  return [-center_of_mass.x + $canvas.width * 0.5 * 1 / scale, -center_of_mass.y + $canvas.height * 0.5 * 1 / scale] as const;
 }
 
 function update(ballsToUpdate: Ball[], speed: number) {
