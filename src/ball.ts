@@ -62,9 +62,15 @@ export class Ball {
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)
+    if (settings.strokeBalls) this.drawStroke(ctx);
     ctx.fill()
     ctx.closePath()
     // console.log(this.position)
+  }
+
+  private drawStroke(ctx: CanvasRenderingContext2D) {
+    ctx.strokeStyle = '#000a'
+    ctx.stroke()
   }
 
   private drawTrace(ctx: CanvasRenderingContext2D) {
