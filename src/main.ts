@@ -50,7 +50,7 @@ for (let i = 0; i < nBalls; i++) {
   );
 }
 
-enableAddBallAtMousePositionFeature(balls, getCtxTranslation, minSize, maxSize);
+enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
 
 addKeyListener('Space', toggleSlowMotion);
 addKeyListener('a', toggleDrawTraces)
@@ -139,6 +139,12 @@ function animate(delta: DOMHighResTimeStamp): void {
 
 function getCtxTranslation() {
   return [-center_of_mass.x + $canvas.width * 0.5 * 1 / scale, -center_of_mass.y + $canvas.height * 0.5 * 1 / scale] as const;
+}
+function getCtxMousePosition(position: { x: number; y: number }) {
+  const mousePosition = new Vector2(position.x, position.y);
+  const [ctxTranslationX, ctxTranslationY] = getCtxTranslation();
+  const ctxTranslation = new Vector2(ctxTranslationX, ctxTranslationY);
+  return mousePosition.div(scale).sub(ctxTranslation);
 }
 
 function update(ballsToUpdate: Ball[], speed: number) {
