@@ -5,6 +5,7 @@ import { stable_color, unstable_color } from './shared';
 import { Vector2 } from './vector';
 import { enableAddBallAtMousePositionFeature } from './addBallAtMousePosition';
 import { enableZoomingFeature, scale } from './zooming';
+import { constructDragWithMouseOver } from './dragWithMouseOver';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -154,6 +155,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
   const attraction_force_bug = 0.01;
   const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5);
 
+  const dragWithMouseOver = constructDragWithMouseOver(getCtxMousePosition, mousePos);
+
   for (let i = 0; i < nBallsForUpdate; i++) {
     const current_ball = ballsToUpdate[i];
     // Attraction to center
@@ -161,6 +164,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
     current_ball.velocity = current_ball.velocity.add(
       to_center.mul(attraction_force_bug)
     );
+
+    dragWithMouseOver?.(current_ball);
 
     for (let k = i + 1; k < nBallsForUpdate; k++) {
       const collider = ballsToUpdate[k];
