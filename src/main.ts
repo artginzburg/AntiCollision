@@ -2,7 +2,7 @@ import { Ball } from './ball';
 import { getRange, getUnder } from './random';
 import { settings, toggleDrawTraces } from './settings';
 import { stable_color, unstable_color } from './shared';
-import { Vector2 } from './vector';
+import { Vector2, Vector2Tools } from './vector';
 import { enableAddBallAtMousePositionFeature } from './addBallAtMousePosition';
 import { enableZoomingFeature, scale } from './zooming';
 import { constructDragWithMouseOver } from './dragWithMouseOver';
@@ -170,7 +170,7 @@ function update(ballsToUpdate: Ball[], speed: number) {
     for (let k = i + 1; k < nBallsForUpdate; k++) {
       const collider = ballsToUpdate[k];
       const collide_vec = current_ball.position.sub(collider.position);
-      const dist = length(collide_vec);
+      const dist = Vector2Tools.length(collide_vec);
 
       const minDist = current_ball.r + collider.r;
 
@@ -213,7 +213,7 @@ function update(ballsToUpdate: Ball[], speed: number) {
 function getBallAt(position: Vector2, ballsForGet: Ball[]) {
   for (const ball of ballsForGet) {
     const v = position.sub(ball.position);
-    const dist = length(v);
+    const dist = Vector2Tools.length(v);
     if (dist < ball.r) {
       return ball;
     }
@@ -234,18 +234,6 @@ function updatePos(
   }
 
   speedDownCounter--;
-}
-
-function dot(v1: Vector2, v2: Vector2) {
-  return v1.x * v2.x + v1.y * v2.y;
-}
-
-function length(v: Vector2) {
-  return Math.sqrt(v.x * v.x + v.y * v.y);
-}
-
-function normalize(v: Vector2) {
-  return v.div(length(v));
 }
 
 function addKeyListener(key: string, callback: () => void) {

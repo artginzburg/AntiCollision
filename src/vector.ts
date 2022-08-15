@@ -45,3 +45,15 @@ export class Vector2 {
     return new Vector2(this.x / v, this.y / v)
   }
 }
+
+export namespace Vector2Tools {
+  function dot(v1: Vector2, v2: Vector2) {
+    return v1.x * v2.x + v1.y * v2.y;
+  }
+  export function length(v: Vector2) {
+    return Math.sqrt(v.x * v.x + v.y * v.y);
+  }
+  function normalize(v: Vector2) {
+    return v.div(Vector2Tools.length(v));
+  }
+}

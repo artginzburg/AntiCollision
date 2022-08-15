@@ -2,6 +2,7 @@ import { settings } from './settings';
 import type { Ball } from './ball';
 import type { Vector2Literal } from './types';
 import type { Vector2 } from './vector';
+import { Vector2Tools } from './vector';
 
 const mouseAttractionMultiplier = {
   /**
@@ -33,9 +34,7 @@ export function constructDragWithMouseOver(
 
   return function dragWithMouseOver(current_ball: Ball) {
     const mouse_collide_vec = ctxMousePosition.sub(current_ball.position);
-    const mouse_dist = Math.sqrt(
-      mouse_collide_vec.x * mouse_collide_vec.x + mouse_collide_vec.y * mouse_collide_vec.y,
-    );
+    const mouse_dist = Vector2Tools.length(mouse_collide_vec);
     const min_mouse_dist = current_ball.r;
 
     if (mouse_dist < min_mouse_dist) {
