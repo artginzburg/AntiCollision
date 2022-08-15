@@ -170,9 +170,7 @@ function update(ballsToUpdate: Ball[], speed: number) {
     for (let k = i + 1; k < nBallsForUpdate; k++) {
       const collider = ballsToUpdate[k];
       const collide_vec = current_ball.position.sub(collider.position);
-      const dist = Math.sqrt(
-        collide_vec.x * collide_vec.x + collide_vec.y * collide_vec.y
-      );
+      const dist = length(collide_vec);
 
       const minDist = current_ball.r + collider.r;
 
@@ -215,7 +213,7 @@ function update(ballsToUpdate: Ball[], speed: number) {
 function getBallAt(position: Vector2, ballsForGet: Ball[]) {
   for (const ball of ballsForGet) {
     const v = position.sub(ball.position);
-    const dist = Math.sqrt(v.x * v.x + v.y * v.y);
+    const dist = length(v);
     if (dist < ball.r) {
       return ball;
     }
