@@ -42,7 +42,7 @@ export function enableZoomingFeature() {
 
   function enableCustomDesktopZoom() {
     window.addEventListener('wheel', ({ deltaY }) => {
-      updateScale(-deltaY / scalingSensitivity.desktopInverted)
+      updateScale(-deltaY / scalingSensitivity.desktopInverted * getProportionalScalingFactor())
     })
   }
 
@@ -79,8 +79,48 @@ function enableCustomIOSZoom() {
 
 function calculateCustomIOSZoom(eventScale: number) {
   const scaleChange = eventScale - defaultBrowserScale;
-  const nextScale = scale + (scaleChange * scalingSensitivity.iOS);
+  const proportionalScalingFactorIOS = getProportionalScalingFactor() * scalingSensitivity.iOS;
+  const nextScale = scale + (scaleChange * scalingSensitivity.iOS) * proportionalScalingFactorIOS;
   const nextScaleConstrained = Math.min(maxScale, Math.max(minScale, nextScale));
 
   return nextScaleConstrained;
+}
+
+/**
+ * Makes sure that zooming feels the same no matter the current `scale`.
+ *
+ * Problem:
+ * with the current `updateScale()` implementation, the scale gets harder to change when it gets higher (closer to the max scale). Respectively, it gets too easy to change when it gets closer to zero (or the min scale).
+ * This happens due to the `wheelPos` getting multiplied by a constant, so the resulting scale changes exponentially instead of linearly.
+ *
+ * Solution: multiply the intended scale change by a factor that changes proportionally to the current scale, but is also affected by the median of possible scale.
+ *
+ * - Not sure exactly how this works, just tossed some numbers around.
+ *
+ * @returns (currently) a factor from 0.18 (aka `config.scalingEasiness`) to 5.39(9)
+ */
+function getProportionalScalingFactor() {
+  const config = {
+    /** Fine-tuned by trial and error. */
+    scalingEasiness: 0.18,
+  } as const;
+
+  const medianBetweenMinMax = (minScale + maxScale) / 2; // 1.55
+
+  /**
+   * Seems to be tied to how fast the scaling actually happens if proportional scaling is not implemented.
+   *
+   * Called "abstract" because it doesn't correspond to any high-level logic introduced in the code.
+   */
+  const abstractDistanceToMax = Math.abs(-medianBetweenMinMax / scale);
+
+  const maximumAbstractDistanceToMax = medianBetweenMinMax * 10;
+  /**
+   * Value from 1 to 0.03(3).
+   * 1 means the scale is at its minimum.
+   * 0.03(3) means the scale is at its maximum.
+   */
+  const percentageAbstractDistanceToMax = abstractDistanceToMax / maximumAbstractDistanceToMax;
+
+  return config.scalingEasiness / percentageAbstractDistanceToMax;
 }
