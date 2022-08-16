@@ -3,31 +3,45 @@ export let scale = 0.35
 const minScale = 0.1
 const maxScale = 3
 
+const scalingSensitivity = {
+  desktopInverted: 5000,
+  mobileInverted: 1000,
+};
+
 export function enableZoomingFeature() {
   let wheelPos = 0.1
-  window.addEventListener('wheel', ({ deltaY }) => {
-    updateScale(-deltaY / 5000)
-  })
 
-  let initialDistance: number | null = null
+  enableCustomDesktopZoom();
 
-  window.addEventListener('touchstart', ({ touches }) => {
-    if (touches.length > 1) {
-      initialDistance = distanceTouches(touches[0], touches[1])
-    }
-  })
+  enableCustomMobileZoom();
 
-  window.addEventListener('touchend', () => {
-    initialDistance = null
-  })
+  function enableCustomMobileZoom() {
+    let initialDistance: number | null = null
 
-  window.addEventListener('touchmove', ({ touches }) => {
-    if (initialDistance !== null) {
-      const distance = distanceTouches(touches[0], touches[1])
-      const diff = distance - initialDistance
-      updateScale(diff / 1000)
-    }
-  })
+    window.addEventListener('touchstart', ({ touches }) => {
+      if (touches.length > 1) {
+        initialDistance = distanceTouches(touches[0], touches[1])
+      }
+    })
+
+    window.addEventListener('touchend', () => {
+      initialDistance = null
+    })
+
+    window.addEventListener('touchmove', ({ touches }) => {
+      if (initialDistance !== null) {
+        const distance = distanceTouches(touches[0], touches[1])
+        const diff = distance - initialDistance
+        updateScale(diff / scalingSensitivity.mobileInverted)
+      }
+    })
+  }
+
+  function enableCustomDesktopZoom() {
+    window.addEventListener('wheel', ({ deltaY }) => {
+      updateScale(-deltaY / scalingSensitivity.desktopInverted)
+    })
+  }
 
   function updateScale(pos: number) {
     wheelPos += pos
