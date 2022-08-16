@@ -3,8 +3,13 @@ import { getRange } from './random';
 import { Ball } from './ball';
 import type { Vector2Literal } from './types';
 
+/**
+ * Add a ball by right-clicking on the canvas.
+ */
 export function enableAddBallAtMousePositionFeature(balls: Ball[], getCtxMousePosition: (position: Vector2Literal) => Vector2, minSize: number, maxSize: number) {
-  window.addEventListener('click', (event) => {
+  window.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+
     const newBallPosition = getCtxMousePosition(event);
     balls.push(
       new Ball(

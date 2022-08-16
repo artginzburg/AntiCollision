@@ -6,6 +6,9 @@ import { Vector2, Vector2Tools } from './vector';
 import { enableAddBallAtMousePositionFeature } from './addBallAtMousePosition';
 import { enableZoomingFeature, scale } from './zooming';
 import { constructDragWithMouseOver } from './dragWithMouseOver';
+import { enableFocusBallAtMousePositionFeature, focusedBall } from './focusBallAtMousePosition';
+import { addKeyListener } from './webUtils';
+import type { Vector2Literal } from './types';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -52,6 +55,7 @@ for (let i = 0; i < nBalls; i++) {
 }
 
 enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
+enableFocusBallAtMousePositionFeature(balls, getCtxMousePosition, getBallAt);
 
 addKeyListener('Space', toggleSlowMotion);
 addKeyListener('a', toggleDrawTraces)
@@ -139,9 +143,15 @@ function animate(delta: DOMHighResTimeStamp): void {
 }
 
 function getCtxTranslation() {
-  return [-center_of_mass.x + $canvas.width * 0.5 * 1 / scale, -center_of_mass.y + $canvas.height * 0.5 * 1 / scale] as const;
+  return calculateFocus(focusedBall ? focusedBall.position : center_of_mass);
 }
-function getCtxMousePosition(position: { x: number; y: number }) {
+function calculateFocus(position: Vector2Literal) {
+  return [
+    -position.x + $canvas.width * 0.5 * 1 / scale,
+    -position.y + $canvas.height * 0.5 * 1 / scale
+  ] as const;
+}
+function getCtxMousePosition(position: Vector2Literal) {
   const mousePosition = new Vector2(position.x, position.y);
   const [ctxTranslationX, ctxTranslationY] = getCtxTranslation();
   const ctxTranslation = new Vector2(ctxTranslationX, ctxTranslationY);
@@ -234,10 +244,4 @@ function updatePos(
   }
 
   speedDownCounter--;
-}
-
-function addKeyListener(key: string, callback: () => void) {
-  window.addEventListener('keyup', (event) => {
-    if (event.code === key || event.key === key) callback();
-  });
 }
