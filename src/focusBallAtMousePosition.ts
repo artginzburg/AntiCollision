@@ -1,7 +1,7 @@
 import type { Ball } from './ball';
 import type { Vector2Literal } from './types';
 import type { Vector2 } from './vector';
-import { addKeyListener } from './webUtils';
+import { addKeyListener, addTapListener } from './webUtils';
 
 export let focusedBall: Ball | null;
 
@@ -11,7 +11,7 @@ export function enableFocusBallAtMousePositionFeature(
   getBallAt: (position: Vector2, ballsForGet: Ball[]) => Ball | null,
 ) {
   window.addEventListener('click', focusBall);
-  window.addEventListener('touchstart', (event) => {
+  addTapListener((event) => {
     if (event.touches.length !== 1) return;
 
     const touch = event.touches[0];

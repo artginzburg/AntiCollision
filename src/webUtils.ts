@@ -27,3 +27,45 @@ export function addTouchHoldListener<T>(
     }
   });
 }
+
+/**
+ * A tap listener that doesn't interfere with other mobile gestures (e.g. zoom).
+ *
+ * - Works with any number of fingers.
+ *
+ * @returns the listener function that can be used to remove the listener.
+ */
+export function addTapListener(
+  tapHandler: (touchstartEvent: TouchEvent) => unknown,
+  timeout = 300 as const,
+): (ev: WindowEventMap['touchstart']) => void {
+  window.addEventListener('touchstart', touchstartListener);
+
+  function touchstartListener(touchstartEvent: WindowEventMap['touchstart']) {
+    const touchendListener = () => {
+      tapHandler(touchstartEvent);
+      removeTouchmoveListener();
+    };
+
+    window.addEventListener('touchend', touchendListener, {
+      once: true,
+    });
+    window.addEventListener('touchmove', removeTouchendListener, {
+      once: true,
+    });
+
+    setTimeout(() => {
+      removeTouchendListener();
+      removeTouchmoveListener();
+    }, timeout);
+
+    function removeTouchendListener() {
+      window.removeEventListener('touchend', touchendListener);
+    }
+    function removeTouchmoveListener() {
+      window.removeEventListener('touchmove', removeTouchendListener);
+    }
+  }
+
+  return touchstartListener;
+}
