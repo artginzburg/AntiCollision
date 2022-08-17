@@ -7,7 +7,7 @@ import { enableAddBallAtMousePositionFeature } from './addBallAtMousePosition';
 import { enableZoomingFeature, scale } from './zooming';
 import { constructDragWithMouseOver } from './dragWithMouseOver';
 import { enableFocusBallAtMousePositionFeature, focusedBall } from './focusBallAtMousePosition';
-import { addKeyListener } from './webUtils';
+import { addKeyListener, addTouchHoldListener } from './webUtils';
 import type { Vector2Literal } from './types';
 
 const $canvas = document.querySelector('canvas')!;
@@ -58,6 +58,7 @@ enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize
 enableFocusBallAtMousePositionFeature(balls, getCtxMousePosition, getBallAt);
 
 addKeyListener('Space', toggleSlowMotion);
+addTouchHoldListener(toggleSlowMotion);
 addKeyListener('a', toggleDrawTraces)
 
 function toggleSlowMotion() {

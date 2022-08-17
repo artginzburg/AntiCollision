@@ -19,6 +19,10 @@ Mouse control
 - Zoom into the simulation by scrolling.
 - Create new balls by right-clicking.
 
+Mobile
+
+- Tap and hold to toggle slow-motion.
+
 ## Future features
 
 - Move around by dragging with the mouse
