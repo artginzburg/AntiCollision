@@ -20,7 +20,7 @@ export class Ball {
     x: number,
     y: number,
     /** Radius */
-    readonly r: number
+    public r: number
   ) {
     this.position = new Vector2(x, y);
     this.velocity = new Vector2(getRange(-4, 4), getRange(-4, 4));

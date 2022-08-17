@@ -1,5 +1,13 @@
-export function addKeyListener(key: string, callback: () => void) {
-  window.addEventListener('keyup', (event) => {
+export function addKeyListener(
+  key: string,
+  callback: () => void,
+  /**
+   * Most modern devices have a "Key Repeat" keyboard preference,
+   * so `onDown` set to `true` will act as "hold to repeat callback".
+   */
+  onDown = false,
+) {
+  window.addEventListener(onDown ? 'keydown' : 'keyup', (event) => {
     if (event.code === key || event.key === key) callback();
   });
 }

@@ -56,4 +56,21 @@ export namespace Vector2Tools {
   function normalize(v: Vector2) {
     return v.div(Vector2Tools.length(v));
   }
+
+  export function rotate(
+    velocity: Vector2,
+    /** From `0` to `4`. `0` — 0º rotation, `1` — 90º rotation. */
+    sensitivity: number,
+    direction: RotationDirection
+  ) {
+    const angle = Math.atan2(velocity.y, velocity.x);
+    const newAngle = angle - (Math.PI / 2) * sensitivity * direction;
+    return new Vector2(Math.cos(newAngle), Math.sin(newAngle)).mul(Vector2Tools.length(velocity));
+  }
+  /** @todo research why `no-shadow` considers enum a problem. Probably, `typescript-eslint` has a custom rule for this. */
+  // eslint-disable-next-line no-shadow
+  export enum RotationDirection {
+    Left = 1,
+    Right = -1,
+  }
 }

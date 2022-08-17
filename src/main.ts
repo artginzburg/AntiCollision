@@ -9,6 +9,7 @@ import { constructDragWithMouseOver } from './dragWithMouseOver';
 import { enableFocusBallAtMousePositionFeature, focusedBall } from './focusBallAtMousePosition';
 import { addKeyListener, addTouchHoldListener } from './webUtils';
 import type { Vector2Literal } from './types';
+import { enableBallControls } from './ballControls';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -56,6 +57,7 @@ for (let i = 0; i < nBalls; i++) {
 
 enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
 enableFocusBallAtMousePositionFeature(balls, getCtxMousePosition, getBallAt);
+enableBallControls();
 
 addKeyListener('Space', toggleSlowMotion);
 addTouchHoldListener(toggleSlowMotion);
