@@ -4,28 +4,55 @@ export function addKeyListener(key: string, callback: () => void) {
   });
 }
 
-/** The {@link duration} and {@link animationWait} are fine-tuned by hand to match iOS 15.5 */
+/**
+ * The {@link duration} and {@link animationWait} are fine-tuned by hand to match iOS 15.5
+ *
+ * @returns the listener function that can be used to remove the listener.
+ */
 export function addTouchHoldListener<T>(
   holdHandler: (ev?: TouchEvent) => T,
   /** Time in milliseconds that should pass until gesture is recognized. */
   duration = 500,
   /** Time in milliseconds that passes from gesture recognition to handler activation. */
   animationWait = 200,
-) {
-  window.addEventListener('touchstart', (ev) => {
+): (ev: WindowEventMap['touchstart']) => void {
+  window.addEventListener('touchstart', touchstartListener);
+
+  function touchstartListener(ev: WindowEventMap['touchstart']) {
     const holdTimeout = setTimeout(() => {
       setTimeout(() => {
         holdHandler(ev);
       }, animationWait);
+      cleanupListeners();
     }, duration);
 
-    window.addEventListener('touchend', clearHoldTimeout);
-    window.addEventListener('touchmove', clearHoldTimeout);
+    window.addEventListener('touchend', touchendListener, {
+      once: true,
+    });
+    window.addEventListener('touchmove', touchmoveListener, {
+      once: true,
+    });
+
+    function touchendListener() {
+      clearHoldTimeout();
+      window.removeEventListener('touchmove', touchmoveListener);
+    }
+    function touchmoveListener() {
+      clearHoldTimeout();
+      window.removeEventListener('touchend', touchendListener);
+    }
 
     function clearHoldTimeout() {
       clearTimeout(holdTimeout);
     }
-  });
+
+    function cleanupListeners() {
+      window.removeEventListener('touchend', touchendListener);
+      window.removeEventListener('touchmove', touchmoveListener);
+    }
+  }
+
+  return touchstartListener;
 }
 
 /**
