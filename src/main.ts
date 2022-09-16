@@ -10,6 +10,7 @@ import { enableFocusBallAtMousePositionFeature, focusedBall } from './focusBallA
 import { addKeyListener, addTouchHoldListener } from './webUtils';
 import type { Vector2Literal } from './types';
 import { enableBallControls } from './ballControls';
+import { updateBallHasLeastStableScore, updateBallStableScore } from './ballScoring';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -164,6 +165,8 @@ function getCtxMousePosition(position: Vector2Literal) {
 function update(ballsToUpdate: Ball[], speed: number) {
   let stable = true;
 
+  updateBallHasLeastStableScore(ballsToUpdate);
+
   const nBallsForUpdate = ballsToUpdate.length;
   const attraction_force_bug = 0.01;
   const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5);
@@ -218,6 +221,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
   for (let i = 0; i < nBallsForUpdate; i++) {
     if (ballsToUpdate[i].stable) ballsToUpdate[i].stableCount++;
     else ballsToUpdate[i].stableCount = 0;
+
+    updateBallStableScore(ballsToUpdate[i]);
   }
 
   return stable;
