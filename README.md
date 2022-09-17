@@ -23,6 +23,10 @@ Mobile
 
 - Tap and hold to toggle slow-motion.
 
+## Bonus features
+
+- The ball that has a white dot in the middle is the one that spent the least amount of time being stable (green). So it might be the most interesting one to watch.
+
 ## Future features
 
 - Move around by dragging with the mouse

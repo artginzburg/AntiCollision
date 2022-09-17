@@ -10,6 +10,8 @@ import { enableFocusBallAtMousePositionFeature, focusedBall } from './focusBallA
 import { addKeyListener, addTouchHoldListener } from './webUtils';
 import type { Vector2Literal } from './types';
 import { enableBallControls } from './ballControls';
+import { updateBallHasLeastStableScore, updateBallStableScore } from './ballScoring';
+import { Engine } from './modules/engine';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -75,11 +77,12 @@ window.addEventListener('mousemove', (event) => {
   mousePos.y = event.y;
 });
 
-window.requestAnimationFrame(animate);
+const engine = new Engine(simulate, render, 1000/60);
+engine.start();
 
 let center_of_mass: Vector2;
 
-function animate(delta: DOMHighResTimeStamp): void {
+function simulate(delta: DOMHighResTimeStamp): void {
   if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }
@@ -127,6 +130,9 @@ function animate(delta: DOMHighResTimeStamp): void {
   }
   center_of_mass = center_of_mass.div(balls.length);
 
+  iterations++;
+}
+function render() {
   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
   ctx.save()
   ctx.scale(scale, scale)
@@ -139,10 +145,6 @@ function animate(delta: DOMHighResTimeStamp): void {
   ctx.fill()
   ctx.closePath()
   ctx.restore()
-
-  iterations++;
-
-  window.requestAnimationFrame(animate);
 }
 
 function getCtxTranslation() {
@@ -163,6 +165,8 @@ function getCtxMousePosition(position: Vector2Literal) {
 
 function update(ballsToUpdate: Ball[], speed: number) {
   let stable = true;
+
+  updateBallHasLeastStableScore(ballsToUpdate);
 
   const nBallsForUpdate = ballsToUpdate.length;
   const attraction_force_bug = 0.01;
@@ -218,6 +222,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
   for (let i = 0; i < nBallsForUpdate; i++) {
     if (ballsToUpdate[i].stable) ballsToUpdate[i].stableCount++;
     else ballsToUpdate[i].stableCount = 0;
+
+    updateBallStableScore(ballsToUpdate[i]);
   }
 
   return stable;

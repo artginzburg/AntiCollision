@@ -2,6 +2,7 @@ import { getRange } from './random';
 import { settings } from './settings';
 import { stable_color_rgb } from './shared';
 import { Vector2, Vector3 } from './vector';
+import { drawBallStableScore } from './ballScoring';
 
 const max_history = 100
 
@@ -15,6 +16,10 @@ export class Ball {
 
   public stable: boolean | undefined;
   public stableCount: number;
+
+  /** The stable score should be initialized with the minimum stable score across all of the current balls. So, it's indeed 0 at the start, but if new balls are spawned later on — 0 is not the right value. */
+  public stableScore = 0;
+  public hasLeastStableScore = false;
 
   constructor(
     x: number,
@@ -65,6 +70,7 @@ export class Ball {
     if (settings.strokeBalls) this.drawStroke(ctx);
     ctx.fill()
     ctx.closePath()
+    this.drawStableScore(ctx);
     // console.log(this.position)
   }
 
@@ -101,5 +107,13 @@ export class Ball {
 
     ctx.strokeStyle = gradient; // Trail color
     ctx.stroke();
+  }
+
+  /**
+   * After some testing, I think the ball found by this score system is the most interesting to watch.
+   * The logic behind is that the highlighted ball is the one that spent the least amount of time being stable.
+   */
+  private drawStableScore(ctx: CanvasRenderingContext2D) {
+    drawBallStableScore(ctx, this);
   }
 }
