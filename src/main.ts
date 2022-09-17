@@ -12,6 +12,7 @@ import type { Vector2Literal } from './types';
 import { enableBallControls } from './ballControls';
 import { updateBallHasLeastStableScore, updateBallStableScore } from './ballScoring';
 import { Engine } from './modules/engine';
+import { bounceOnCollision } from './features/bounciness';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -200,6 +201,8 @@ function update(ballsToUpdate: Ball[], speed: number) {
         collider.stable = false;
 
         const collide_axe = collide_vec.div(dist);
+
+        if (settings.bounciness > 0) bounceOnCollision(collide_axe, minDist, current_ball, collider);
 
         current_ball.position = current_ball.position.add(
           collide_axe.mul(0.5 * (minDist - dist))

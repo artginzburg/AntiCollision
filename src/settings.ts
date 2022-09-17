@@ -4,6 +4,7 @@ export const settings = {
   useAntiCollisionBug: true,
   strokeBalls: false,
   dragWithMouseOver: false,
+  bounciness: 0,
 };
 
 // @ts-expect-error to be able to control that from browser console
