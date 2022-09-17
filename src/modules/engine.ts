@@ -1,6 +1,6 @@
 /**
  * A fixed time-step loop simulation engine.
- * @author Frank Poth
+ * @author Frank Poth <https://github.com/frankarendpoth>
  */
 export class Engine {
 
