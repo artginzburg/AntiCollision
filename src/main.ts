@@ -187,38 +187,13 @@ function update(ballsToUpdate: Ball[], speed: number) {
 
     for (let k = i + 1; k < nBallsForUpdate; k++) {
       const collider = ballsToUpdate[k];
-      const collide_vec = current_ball.position.sub(collider.position);
-      const dist = Vector2Tools.length(collide_vec);
-
-      const minDist = current_ball.r + collider.r;
-
-      if (dist < minDist) {
-        // Collision happened.
-        // This also includes the case when the balls are barely touching each other.
+      const onCollision = () => {
         stable = false;
 
         current_ball.stable = false;
         collider.stable = false;
-
-        const collide_axe = collide_vec.div(dist);
-
-        if (settings.bounciness > 0) bounceOnCollision(collide_axe, minDist, current_ball, collider);
-
-        current_ball.position = current_ball.position.add(
-          collide_axe.mul(0.5 * (minDist - dist))
-        );
-        collider.position = collider.position.sub(
-          collide_axe.mul(0.5 * (minDist - dist))
-        );
-        if (!settings.useAntiCollisionBug) {
-          current_ball.velocity = current_ball.velocity.add(
-            collide_axe.mul(0.5 * (minDist - dist))
-          );
-          collider.velocity = collider.velocity.sub(
-            collide_axe.mul(0.5 * (minDist - dist))
-          );
-        }
-      }
+      };
+      preventIntersection(current_ball, collider, onCollision);
     }
   }
 
@@ -256,4 +231,39 @@ function updatePos(
   }
 
   speedDownCounter--;
+}
+
+function preventIntersection(current_ball: Ball, collider: Ball, onCollision?: () => void) {
+  const collide_vec = current_ball.position.sub(collider.position);
+  const dist = Vector2Tools.length(collide_vec);
+
+  const minDist = current_ball.r + collider.r;
+
+  if (dist < minDist) {
+    onCollision?.();
+    collide(collide_vec, dist, minDist, current_ball, collider);
+  }
+}
+
+/**
+ * Collision happened.
+ * This also includes the case when the balls are barely touching each other.
+ */
+function collide(collide_vec: Vector2, dist: number, minDist: number, current_ball: Ball, collider: Ball) {
+  const collide_axe = collide_vec.div(dist);
+
+  current_ball.position = current_ball.position.add(
+    collide_axe.mul(0.5 * (minDist - dist))
+  );
+  collider.position = collider.position.sub(
+    collide_axe.mul(0.5 * (minDist - dist))
+  );
+  if (!settings.useAntiCollisionBug) {
+    current_ball.velocity = current_ball.velocity.add(
+      collide_axe.mul(0.5 * (minDist - dist))
+    );
+    collider.velocity = collider.velocity.sub(
+      collide_axe.mul(0.5 * (minDist - dist))
+    );
+  }
 }
