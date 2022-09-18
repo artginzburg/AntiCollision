@@ -63,6 +63,34 @@ function spawnBallsDefault() {
   }
 }
 
+function spawnAsteroidsBelt(shouldSpawnInside?: boolean) {
+  const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5);
+
+  for (let i = 0; i < nBalls; i++) {
+    const angle = getUnder(2 * Math.PI);
+    const radius = 2500;
+
+    const start_x = radius * Math.cos(angle);
+    const start_y = radius * Math.sin(angle);
+
+    const newBall = new Ball(
+      start_x + $canvas.width * 0.45,
+      start_y + $canvas.height * 0.9,
+      getRange(minSize, maxSize),
+    );
+
+    const to_center = center_position.sub(newBall.position);
+
+    newBall.velocity = Vector2Tools.rotate(
+      to_center,
+      1,
+      i % 2 === 0 ? Vector2Tools.RotationDirection.Left : Vector2Tools.RotationDirection.Right,
+    ).mul(shouldSpawnInside ? (Math.random() > 1/4 ? 0.75 : 0) : 0.75);
+
+    balls.push(newBall);
+  }
+}
+
 enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
 enableFocusBallAtMousePositionFeature(balls, getCtxMousePosition, getBallAt);
 enableBallControls(balls);
