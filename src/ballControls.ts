@@ -2,11 +2,12 @@ import type { Ball } from './ball';
 import { focusedBall } from './focusBallAtMousePosition';
 import { Vector2Tools } from './vector';
 import { addKeyListener } from './webUtils';
+import { KeyControls } from './modules/KeyControls';
 
 const controls = {
   radius: {
-    increment: ']',
-    decrement: '[',
+    increment: 'BracketRight',
+    decrement: 'BracketLeft',
     /** Shift + Right Bracket = Right Curly Bracket */
     incrementFast: '}',
     /** Shift + Left Bracket = Left Curly Bracket */
@@ -30,29 +31,30 @@ const sensitivities = {
 } as const;
 
 export function enableBallControls(balls: Ball[]) {
-  enableBallRadiusControl(balls);
-  enableBallVelocityControl(balls);
+  const keyControls = generateKeyControls();
+
+  enableBallRadiusControl(balls, keyControls);
+  enableBallVelocityControl(balls, keyControls);
 }
 
-function enableBallRadiusControl(balls: Ball[]) {
-  addKeyListener(
-    controls.radius.increment,
-    () => {
-      doForFocusedOrAllBalls(balls, (ball) => {
-        ballUpdateRadius(ball, sensitivities.radius.default);
-      });
-    },
-    true,
+function generateKeyControls() {
+  const keyControls = new KeyControls(
+    Object.values(controls).flatMap(Object.values),
   );
-  addKeyListener(
-    controls.radius.decrement,
-    () => {
-      doForFocusedOrAllBalls(balls, (ball) => {
-        ballUpdateRadius(ball, -sensitivities.radius.default);
-      });
-    },
-    true,
-  );
+  return keyControls;
+}
+
+function enableBallRadiusControl(balls: Ball[], keyControls: ReturnType<typeof generateKeyControls>) {
+  keyControls.callbacks[controls.radius.increment] = () => {
+    doForFocusedOrAllBalls(balls, (ball) => {
+      ballUpdateRadius(ball, sensitivities.radius.default);
+    });
+  };
+  keyControls.callbacks[controls.radius.decrement] = () => {
+    doForFocusedOrAllBalls(balls, (ball) => {
+      ballUpdateRadius(ball, -sensitivities.radius.default);
+    });
+  };
   addKeyListener(
     controls.radius.incrementFast,
     () => {
@@ -72,35 +74,19 @@ function enableBallRadiusControl(balls: Ball[]) {
     true,
   );
 }
-function enableBallVelocityControl(balls: Ball[]) {
-  addKeyListener(
-    controls.velocity.increment,
-    () => {
-      doForFocusedOrAllBalls(balls, ballIncreaseVelocity);
-    },
-    true,
-  );
-  addKeyListener(
-    controls.velocity.decrement,
-    () => {
-      doForFocusedOrAllBalls(balls, ballDecreaseVelocity);
-    },
-    true,
-  );
-  addKeyListener(
-    controls.velocity.rotateLeft,
-    () => {
-      doForFocusedOrAllBalls(balls, ballSteerLeft);
-    },
-    true,
-  );
-  addKeyListener(
-    controls.velocity.rotateRight,
-    () => {
-      doForFocusedOrAllBalls(balls, ballSteerRight);
-    },
-    true,
-  );
+function enableBallVelocityControl(balls: Ball[], keyControls: ReturnType<typeof generateKeyControls>) {
+  keyControls.callbacks[controls.velocity.increment] = () => {
+    doForFocusedOrAllBalls(balls, ballIncreaseVelocity);
+  };
+  keyControls.callbacks[controls.velocity.decrement] = () => {
+    doForFocusedOrAllBalls(balls, ballDecreaseVelocity);
+  };
+  keyControls.callbacks[controls.velocity.rotateLeft] = () => {
+    doForFocusedOrAllBalls(balls, ballSteerLeft);
+  };
+  keyControls.callbacks[controls.velocity.rotateRight] = () => {
+    doForFocusedOrAllBalls(balls, ballSteerRight);
+  };
 }
 
 /** @mutates {@link Ball.r} */
