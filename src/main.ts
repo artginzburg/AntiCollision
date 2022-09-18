@@ -42,20 +42,25 @@ let iterations = 0
 
 const spawn_range_factor = 0.5;
 const balls: Ball[] = [];
-for (let i = 0; i < nBalls; i++) {
-  const angle = getUnder(2 * Math.PI);
-  const radius = 350.0;
 
-  const start_x = radius * Math.cos(angle);
-  const start_y = radius * Math.sin(angle);
+spawnBallsDefault();
 
-  balls.push(
-    new Ball(
-      start_x + $canvas.width * 0.5,
-      start_y + $canvas.height * 0.5,
-      getRange(minSize, maxSize)
-    )
-  );
+function spawnBallsDefault() {
+  for (let i = 0; i < nBalls; i++) {
+    const angle = getUnder(2 * Math.PI);
+    const radius = 350.0;
+
+    const start_x = radius * Math.cos(angle);
+    const start_y = radius * Math.sin(angle);
+
+    balls.push(
+      new Ball(
+        start_x + $canvas.width * 0.5,
+        start_y + $canvas.height * 0.5,
+        getRange(minSize, maxSize)
+      )
+    );
+  }
 }
 
 enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
