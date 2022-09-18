@@ -60,7 +60,7 @@ for (let i = 0; i < nBalls; i++) {
 
 enableAddBallAtMousePositionFeature(balls, getCtxMousePosition, minSize, maxSize);
 enableFocusBallAtMousePositionFeature(balls, getCtxMousePosition, getBallAt);
-enableBallControls();
+enableBallControls(balls);
 
 addKeyListener('Space', toggleSlowMotion);
 addTouchHoldListener(toggleSlowMotion);

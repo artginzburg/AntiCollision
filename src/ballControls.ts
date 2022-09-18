@@ -29,91 +29,75 @@ const sensitivities = {
   },
 } as const;
 
-export function enableBallControls() {
-  enableBallRadiusControl();
-  enableBallVelocityControl();
+export function enableBallControls(balls: Ball[]) {
+  enableBallRadiusControl(balls);
+  enableBallVelocityControl(balls);
 }
 
-function enableBallRadiusControl() {
+function enableBallRadiusControl(balls: Ball[]) {
   addKeyListener(
     controls.radius.increment,
     () => {
-      if (focusedBall) {
-        ballUpdateRadius(focusedBall, sensitivities.radius.default);
-      }
+      doForFocusedOrAllBalls(balls, (ball) => {
+        ballUpdateRadius(ball, sensitivities.radius.default);
+      });
     },
     true,
   );
   addKeyListener(
     controls.radius.decrement,
     () => {
-      if (focusedBall) {
-        ballUpdateRadius(focusedBall, -sensitivities.radius.default);
-      }
+      doForFocusedOrAllBalls(balls, (ball) => {
+        ballUpdateRadius(ball, -sensitivities.radius.default);
+      });
     },
     true,
   );
   addKeyListener(
     controls.radius.incrementFast,
     () => {
-      if (focusedBall) {
-        ballUpdateRadius(focusedBall, sensitivities.radius.fast);
-      }
+      doForFocusedOrAllBalls(balls, (ball) => {
+        ballUpdateRadius(ball, sensitivities.radius.fast);
+      });
     },
     true,
   );
   addKeyListener(
     controls.radius.decrementFast,
     () => {
-      if (focusedBall) {
-        ballUpdateRadius(focusedBall, -sensitivities.radius.fast);
-      }
+      doForFocusedOrAllBalls(balls, (ball) => {
+        ballUpdateRadius(ball, -sensitivities.radius.fast);
+      });
     },
     true,
   );
 }
-function enableBallVelocityControl() {
+function enableBallVelocityControl(balls: Ball[]) {
   addKeyListener(
     controls.velocity.increment,
     () => {
-      if (focusedBall) {
-        focusedBall.velocity = focusedBall.velocity.mul(1 + sensitivities.velocity.default);
-      }
+      doForFocusedOrAllBalls(balls, ballIncreaseVelocity);
     },
     true,
   );
   addKeyListener(
     controls.velocity.decrement,
     () => {
-      if (focusedBall) {
-        focusedBall.velocity = focusedBall.velocity.mul(1 - sensitivities.velocity.default);
-      }
+      doForFocusedOrAllBalls(balls, ballDecreaseVelocity);
     },
     true,
   );
   addKeyListener(
     controls.velocity.rotateLeft,
     () => {
-      if (focusedBall) {
-        focusedBall.velocity = Vector2Tools.rotate(
-          focusedBall.velocity,
-          sensitivities.velocity.default,
-          Vector2Tools.RotationDirection.Left,
-        );
-      }
+      doForFocusedOrAllBalls(balls, ballSteerLeft);
     },
     true,
   );
   addKeyListener(
     controls.velocity.rotateRight,
     () => {
-      if (focusedBall) {
-        focusedBall.velocity = Vector2Tools.rotate(
-          focusedBall.velocity,
-          sensitivities.velocity.default,
-          Vector2Tools.RotationDirection.Right,
-        );
-      }
+      doForFocusedOrAllBalls(balls, ballSteerRight);
     },
     true,
   );
@@ -125,4 +109,36 @@ function ballUpdateRadius(ball: Ball, rChangePercentage: number) {
   /** Same as `minSize` from [main.ts](./main.ts) for now. */
   const minSize = 5;
   ball.r = Math.max(rNext, minSize);
+}
+
+function doForFocusedOrAllBalls(balls: Ball[], callback: (ball: Ball) => void) {
+  if (focusedBall) {
+    callback(focusedBall);
+  } else {
+    for (const ball of balls) {
+      callback(ball);
+    }
+  }
+}
+
+function ballIncreaseVelocity(ball: Ball) {
+  ball.velocity = ball.velocity.mul(1 + sensitivities.velocity.default);
+}
+function ballDecreaseVelocity(ball: Ball) {
+  ball.velocity = ball.velocity.mul(1 - sensitivities.velocity.default);
+}
+
+function ballSteerLeft(ball: Ball) {
+  ball.velocity = Vector2Tools.rotate(
+    ball.velocity,
+    sensitivities.velocity.default,
+    Vector2Tools.RotationDirection.Left,
+  );
+}
+function ballSteerRight(ball: Ball) {
+  ball.velocity = Vector2Tools.rotate(
+    ball.velocity,
+    sensitivities.velocity.default,
+    Vector2Tools.RotationDirection.Right,
+  );
 }
