@@ -285,6 +285,8 @@ function preventIntersection(current_ball: Ball, collider: Ball, onCollision?: (
 function collide(collide_vec: Vector2, dist: number, minDist: number, current_ball: Ball, collider: Ball) {
   const collide_axe = collide_vec.div(dist);
 
+  if (settings.bounciness > 0) bounceOnCollision(collide_axe, minDist, current_ball, collider);
+
   current_ball.position = current_ball.position.add(
     collide_axe.mul(0.5 * (minDist - dist))
   );
