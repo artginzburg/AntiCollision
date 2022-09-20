@@ -13,6 +13,7 @@ import { enableBallControls } from './ballControls';
 import { updateBallHasLeastStableScore, updateBallStableScore } from './ballScoring';
 import { Engine } from './modules/engine';
 import { bounceOnCollision } from './features/bounciness';
+import { enableEngineControls } from './controls';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -113,6 +114,8 @@ window.addEventListener('mousemove', (event) => {
 
 const engine = new Engine(simulate, render, 1000/60);
 engine.start();
+
+enableEngineControls(engine);
 
 let center_of_mass: Vector2;
 
