@@ -28,7 +28,7 @@ export class Engine {
 
   }
 
-  private cycle(time_stamp: number) {
+  protected cycle(time_stamp: number) {
 
     this.animation_frame_request = window.requestAnimationFrame(this.startCycle);
 
@@ -51,6 +51,8 @@ export class Engine {
 
     if (updated) this.render();
 
+    return updated;
+
   }
 
   public start() {
@@ -63,6 +65,41 @@ export class Engine {
 
     window.cancelAnimationFrame(this.animation_frame_request!);
 
+  }
+
+}
+
+export class EngineWithStats extends Engine {
+
+  private renderHistory: number[] = [];
+
+  /** How much renders happened in the last second of time. */
+  getFPS() {
+
+    this.renderHistory = this.renderHistory.filter(
+      (renderDate) => renderDate > (Date.now() - 1000),
+    );
+
+    return this.renderHistory.length;
+
+  }
+
+  /** Updates per second goal. */
+  getUPS() {
+
+    return Math.round(1000 / this.time_step);
+
+  }
+
+  protected override cycle(time_stamp: number) {
+
+    const rendered = super.cycle(time_stamp);
+
+    if (rendered) {
+      this.renderHistory.push(Date.now());
+    }
+
+    return rendered;
   }
 
 }

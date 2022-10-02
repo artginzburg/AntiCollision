@@ -11,9 +11,10 @@ import { addKeyListener, addTouchHoldListener } from './webUtils';
 import type { Vector2Literal } from './types';
 import { enableBallControls } from './ballControls';
 import { updateBallHasLeastStableScore, updateBallStableScore } from './ballScoring';
-import { Engine } from './modules/engine';
+import { EngineWithStats } from './modules/engine';
 import { bounceOnCollision } from './features/bounciness';
 import { enableEngineControls } from './controls';
+import { updateStatsDisplay } from './features/statsDisplay';
 
 const $canvas = document.querySelector('canvas')!;
 const ctx = $canvas.getContext('2d')!;
@@ -112,7 +113,7 @@ window.addEventListener('mousemove', (event) => {
   mousePos.y = event.y;
 });
 
-const engine = new Engine(simulate, render, 1000/60);
+const engine = new EngineWithStats(simulate, render, 1000/60);
 engine.start();
 
 enableEngineControls(engine);
@@ -120,6 +121,8 @@ enableEngineControls(engine);
 let center_of_mass: Vector2;
 
 function simulate(delta: DOMHighResTimeStamp): void {
+  updateStatsDisplay(engine, speedDownFactor, scale, balls);
+
   if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }

@@ -15,9 +15,30 @@
 
       user-select: none;
     }
+    #stats {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      padding: 1em;
+
+      letter-spacing: 1px;
+
+      font-family: 'Courier New', Courier, monospace;
+      color: white;
+      text-shadow: 0 0 3px black;
+
+      transition-property: opacity;
+      transition-duration: 0.2s;
+      opacity: 0;
+    }
+    #stats:hover {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <canvas></canvas>
+  <span id="stats"></span>
 </body>
 </html>

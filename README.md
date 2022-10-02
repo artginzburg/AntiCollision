@@ -19,6 +19,8 @@ Mouse control
 - Zoom into the simulation by scrolling.
 - Create new balls by right-clicking.
 
+> View stats by hovering over the top left corner of the screen.
+
 Mobile
 
 - Tap and hold to toggle slow-motion.
