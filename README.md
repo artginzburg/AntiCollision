@@ -13,6 +13,10 @@ The following keyboard shortcuts are available
 - <kbd>space</kbd> toggle slow-motion.
 - <kbd>esc</kbd> de-focus a followed ball.
 
+<br>
+
+- <kbd>J</kbd> and <kbd>K</kbd> control the speed of the simulation.
+
 Mouse control
 
 - Follow a particular ball by clicking it.
@@ -32,5 +36,4 @@ Mobile
 ## Future features
 
 - Move around by dragging with the mouse
-- Figure out how to run the simulation without tieing its speed to the number of frames per second
 - Sounds
