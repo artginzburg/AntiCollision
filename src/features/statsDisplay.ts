@@ -10,6 +10,11 @@ export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: num
     `Speed: ${engine.getUPS()}${speedDownFactor === 1 ? '' : ` / ${speedDownFactor}`}`,
     `Zoom: ${roundToDecimals(scale, 2)}`,
     `Balls: ${balls.length}`,
+    `Approximate Stability: ${percentageOf(balls, (ball) => ball.stableCount > 255)}`,
   ];
   statsDisplay.innerText = stats.join('; ');
+}
+
+function percentageOf<T>(arr: T[], predicate: (value: T, index: number, array: T[]) => unknown) {
+  return `${Math.round((arr.filter(predicate).length / arr.length) * 100)}%`;
 }
