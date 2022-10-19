@@ -184,13 +184,17 @@ function render() {
   synchronizeRenderingContext(ctxTraces);
 
   balls.forEach(b => b.draw(ctx, ctxTraces))
-  ctx.fillStyle = 'purple'
-  ctx.beginPath()
-  ctx.arc(center_of_mass.x, center_of_mass.y, 10, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.closePath()
+  drawCenterOfMass(ctx);
   ctx.restore()
   ctxTraces.restore()
+}
+
+function drawCenterOfMass(context: CanvasRenderingContext2D) {
+  context.fillStyle = 'purple'
+  context.beginPath()
+  context.arc(center_of_mass.x, center_of_mass.y, 10, 0, Math.PI * 2)
+  context.fill()
+  context.closePath()
 }
 
 /** Synchronizes context with current simulation state. */
