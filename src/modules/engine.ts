@@ -72,6 +72,7 @@ export class Engine {
 export class EngineWithStats extends Engine {
 
   private renderHistory: number[] = [];
+  private maximumSpeedHistory: number[] = [];
 
   /** How much renders happened in the last second of time. */
   getFPS() {
@@ -93,13 +94,57 @@ export class EngineWithStats extends Engine {
 
   protected override cycle(time_stamp: number) {
 
+    const updateStartedAt = performance.now();
+
     const rendered = super.cycle(time_stamp);
+
+    const updateEndedAt = performance.now();
+
+    const thisUpdateCycleTook = updateEndedAt - updateStartedAt; // milliseconds
+
+    this.handleMaximumUPSCalculation(thisUpdateCycleTook);
 
     if (rendered) {
       this.renderHistory.push(Date.now());
     }
 
     return rendered;
+  }
+
+  private handleMaximumUPSCalculation(thisUpdateCycleTook: number) {
+    const fpsGoal = Math.max(30, this.getFPS()); // TODO! set the actual framerate of the monitor here. Without this, the feature is useless for anyone with another framerate.
+
+    const howMuchUpdateCyclesCanWeProcessInASecond = 1000 / thisUpdateCycleTook;
+
+    const howMuchDoesItLag = fpsGoal / howMuchUpdateCyclesCanWeProcessInASecond; // If this value is > 1, the simulation will lag (e.g. not being able to exceed 30 fps).
+
+    const howMuchTimesCanWeIncreaseUPSGoalToNotLag = 1 / howMuchDoesItLag;
+
+    const upsGoal = this.getUPS();
+
+    const maximumSpeed = upsGoal * howMuchTimesCanWeIncreaseUPSGoalToNotLag;
+
+    const doesFPSLagNow = howMuchDoesItLag > 1;
+
+    if (maximumSpeed !== Infinity) {
+      if (!doesFPSLagNow) {
+        this.maximumSpeedHistory.push(maximumSpeed);
+      } else {
+        const fineTunedHowMuchDoesItLagMultiplier = 0.9;
+        this.maximumSpeedHistory.push(maximumSpeed / (howMuchDoesItLag * fineTunedHowMuchDoesItLagMultiplier));
+      }
+    }
+
+    const maximumSpeedHistoryMaxLength = 50;
+
+    if (this.maximumSpeedHistory.length >= maximumSpeedHistoryMaxLength) {
+      this.maximumSpeedHistory.shift();
+    }
+  }
+
+  /** This works inconsistently right now. E.g. if the current UPS goal is 60, it shows the recommended cap at around 1000 UPS, whilst in reality I can set it at 100000 without any lag (though the cap corrects over time if the user starts to increase the UPS goal). */
+  public getRecommendedMaximumUPS() {
+    return Math.round(this.maximumSpeedHistory.reduce((prev, cur) => prev + cur, 0) / this.maximumSpeedHistory.length)
   }
 
 }

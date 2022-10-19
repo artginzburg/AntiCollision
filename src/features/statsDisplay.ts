@@ -11,6 +11,7 @@ export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: num
     `Zoom: ${roundToDecimals(scale, 2)}`,
     `Balls: ${balls.length}`,
     `Approximate Stability: ${percentageOf(balls, (ball) => ball.stableCount > 255)}`,
+    `Recommended Maximum Speed: ${engine.getRecommendedMaximumUPS()}`
   ];
   statsDisplay.innerText = stats.join('; ');
 }
