@@ -62,8 +62,8 @@ export class Ball {
     return va;
   }
 
-  public draw(ctx: CanvasRenderingContext2D) {
-    if (settings.drawTraces) this.drawTrace(ctx);
+  public draw(ctx: CanvasRenderingContext2D, ctxTraces: CanvasRenderingContext2D) {
+    if (settings.drawTraces) this.drawTrace(ctxTraces);
     ctx.fillStyle = this.color!.toRGB()
     ctx.beginPath()
     ctx.arc(this.position.x, this.position.y, this.r, 0, Math.PI * 2)

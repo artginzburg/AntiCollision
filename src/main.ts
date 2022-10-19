@@ -16,16 +16,23 @@ import { bounceOnCollision } from './features/bounciness';
 import { enableEngineControls } from './controls';
 import { updateStatsDisplay } from './features/statsDisplay';
 
-const $canvas = document.querySelector('canvas')!;
+const $canvas: HTMLCanvasElement = document.querySelector('#balls')!;
 const ctx = $canvas.getContext('2d')!;
+
+const $canvasTraces: HTMLCanvasElement = document.querySelector('#traces')!;
+const ctxTraces = $canvasTraces.getContext('2d')!;
 
 handleResize()
 
 window.addEventListener('resize', handleResize)
 
 function handleResize() {
-  $canvas.width = window.innerWidth;
-  $canvas.height = window.innerHeight;
+  fitCanvasToWindow($canvas);
+  fitCanvasToWindow($canvasTraces);
+}
+function fitCanvasToWindow(canvas: HTMLCanvasElement) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 
 enableZoomingFeature();
@@ -173,18 +180,25 @@ function simulate(delta: DOMHighResTimeStamp): void {
   iterations++;
 }
 function render() {
-  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
-  ctx.save()
-  ctx.scale(scale, scale)
-  ctx.translate(...getCtxTranslation())
+  synchronizeRenderingContext(ctx);
+  synchronizeRenderingContext(ctxTraces);
 
-  balls.forEach(b => b.draw(ctx))
+  balls.forEach(b => b.draw(ctx, ctxTraces))
   ctx.fillStyle = 'purple'
   ctx.beginPath()
   ctx.arc(center_of_mass.x, center_of_mass.y, 10, 0, Math.PI * 2)
   ctx.fill()
   ctx.closePath()
   ctx.restore()
+  ctxTraces.restore()
+}
+
+/** Synchronizes context with current simulation state. */
+function synchronizeRenderingContext(context: CanvasRenderingContext2D) {
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  context.save();
+  context.scale(scale, scale);
+  context.translate(...getCtxTranslation());
 }
 
 function getCtxTranslation() {
