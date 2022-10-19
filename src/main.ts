@@ -228,7 +228,7 @@ function update(ballsToUpdate: Ball[], speed: number) {
 
   const nBallsForUpdate = ballsToUpdate.length;
   const attraction_force_bug = 0.01;
-  const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5);
+  const center_position = new Vector2($canvas.width * 0.5, $canvas.width * 0.5); //! In original C++ code, second parameter is the window height, not its width. But yeah, that makes the ball system move in a fun way instead of sitting in one position.
 
   const dragWithMouseOver = constructDragWithMouseOver(getCtxMousePosition, mousePos);
 
