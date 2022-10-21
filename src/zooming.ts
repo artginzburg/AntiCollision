@@ -50,7 +50,7 @@ export function enableZoomingFeature() {
     wheelPos += pos
     if (wheelPos < 0) {
       if (useElasticScrolling) {
-        wheelPos -= wheelPos / 20
+        wheelPos -= wheelPos / 10
       } else {
         wheelPos = 0
       }
