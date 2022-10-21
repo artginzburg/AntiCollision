@@ -42,14 +42,26 @@ export function enableZoomingFeature() {
 
   function enableCustomDesktopZoom() {
     window.addEventListener('wheel', ({ deltaY }) => {
-      updateScale(-deltaY / scalingSensitivity.desktopInverted * getProportionalScalingFactor())
+      updateScale(-deltaY / scalingSensitivity.desktopInverted * getProportionalScalingFactor(), isDeviceMacLike())
     })
   }
 
-  function updateScale(pos: number) {
+  function updateScale(pos: number, useElasticScrolling?: boolean) {
     wheelPos += pos
-    if (wheelPos < 0) wheelPos = 0
-    if (wheelPos > 1) wheelPos = 1
+    if (wheelPos < 0) {
+      if (useElasticScrolling) {
+        wheelPos -= wheelPos / 20
+      } else {
+        wheelPos = 0
+      }
+    }
+    if (wheelPos > 1) {
+      if (useElasticScrolling) {
+        wheelPos -= (wheelPos - 1) / 4
+      } else {
+        wheelPos = 1
+      }
+    }
     scale = wheelPos * (maxScale - minScale) + minScale
   }
 }
@@ -123,4 +135,8 @@ function getProportionalScalingFactor() {
   const percentageAbstractDistanceToMax = abstractDistanceToMax / maximumAbstractDistanceToMax;
 
   return config.scalingEasiness / percentageAbstractDistanceToMax;
+}
+
+function isDeviceMacLike() {
+  return navigator.userAgent.match(/Mac/i) !== null;
 }
