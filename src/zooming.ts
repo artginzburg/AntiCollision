@@ -1,4 +1,4 @@
-import { defaultBrowserScale, isDeviceIOSLike, preventNativeMobileZoom, touchEventHasScale } from './zoomingIos';
+import { isDeviceIOSLike, preventNativeMobileZoom, touchEventHasScale } from './zoomingIos';
 
 export let scale = 0.35
 
@@ -8,7 +8,6 @@ const maxScale = 3
 const scalingSensitivity = {
   desktopInverted: 5000,
   mobileInverted: 500,
-  iOS: 0.2,
 };
 
 export function enableZoomingFeature() {
@@ -16,7 +15,9 @@ export function enableZoomingFeature() {
 
   enableCustomDesktopZoom();
 
-  isDeviceIOSLike() ? enableCustomIOSZoom() : enableCustomMobileZoom();
+  const isIOSLike = isDeviceIOSLike();
+
+  enableCustomMobileZoom();
 
   function enableCustomMobileZoom() {
     let lastDistance: number | null = null
@@ -31,14 +32,27 @@ export function enableZoomingFeature() {
       lastDistance = null
     })
 
-    window.addEventListener('touchmove', ({ touches }) => {
+    window.addEventListener('touchmove', (event) => {
+      if (isIOSLike) {
+        if (!touchEventHasScale(event)) return; // TODO maybe we should not disable scroll completely if device has iOS, but `event.scale` is not present.
+        preventNativeMobileZoom(event);
+      }
+
+      const { touches } = event;
+
       if (lastDistance !== null) {
         const distance = distanceTouches(touches[0], touches[1])
         const diff = distance - lastDistance
         updateScale(diff / scalingSensitivity.mobileInverted)
         lastDistance = distance
       }
-    })
+    }, isIOSLike ? {
+      /**
+       * Required for event prevention.
+       * @see preventNativeMobileZoom
+       */
+      passive: false,
+    } : undefined)
   }
 
   function enableCustomDesktopZoom() {
@@ -60,31 +74,6 @@ function distanceTouches(touch1: Touch, touch2: Touch) {
 }
 function getDistance(x1: number, y1: number, x2: number, y2: number) {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-}
-
-function enableCustomIOSZoom() {
-  window.addEventListener('touchmove', (event) => {
-    if (!touchEventHasScale(event)) return;
-
-    preventNativeMobileZoom(event);
-
-    scale = calculateCustomIOSZoom(event.scale);
-  }, {
-    /**
-     * Required for event prevention.
-     * @see preventNativeMobileZoom
-     */
-    passive: false,
-  });
-}
-
-function calculateCustomIOSZoom(eventScale: number) {
-  const scaleChange = eventScale - defaultBrowserScale;
-  const proportionalScalingFactorIOS = getProportionalScalingFactor() * scalingSensitivity.iOS;
-  const nextScale = scale + (scaleChange * scalingSensitivity.iOS) * proportionalScalingFactorIOS;
-  const nextScaleConstrained = Math.min(maxScale, Math.max(minScale, nextScale));
-
-  return nextScaleConstrained;
 }
 
 /**
