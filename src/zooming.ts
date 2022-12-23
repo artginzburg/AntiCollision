@@ -7,7 +7,7 @@ const maxScale = 3
 
 const scalingSensitivity = {
   desktopInverted: 5000,
-  mobileInverted: 1000,
+  mobileInverted: 500,
   iOS: 0.2,
 };
 
@@ -19,23 +19,24 @@ export function enableZoomingFeature() {
   isDeviceIOSLike() ? enableCustomIOSZoom() : enableCustomMobileZoom();
 
   function enableCustomMobileZoom() {
-    let initialDistance: number | null = null
+    let lastDistance: number | null = null
 
     window.addEventListener('touchstart', ({ touches }) => {
       if (touches.length > 1) {
-        initialDistance = distanceTouches(touches[0], touches[1])
+        lastDistance = distanceTouches(touches[0], touches[1])
       }
     })
 
     window.addEventListener('touchend', () => {
-      initialDistance = null
+      lastDistance = null
     })
 
     window.addEventListener('touchmove', ({ touches }) => {
-      if (initialDistance !== null) {
+      if (lastDistance !== null) {
         const distance = distanceTouches(touches[0], touches[1])
-        const diff = distance - initialDistance
+        const diff = distance - lastDistance
         updateScale(diff / scalingSensitivity.mobileInverted)
+        lastDistance = distance
       }
     })
   }
