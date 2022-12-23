@@ -5,9 +5,10 @@ export let scale = 0.35
 const minScale = 0.1
 const maxScale = 3
 
-const scalingSensitivity = {
-  desktopInverted: 5000,
-  mobileInverted: 500,
+namespace ScalingSensitivity {
+  export const desktopInverted = 5000;
+  export const mobileInverted = 500;
+  export const desktopPinch = ScalingSensitivity.mobileInverted / 1000;
 };
 
 export function enableZoomingFeature() {
@@ -42,7 +43,7 @@ export function enableZoomingFeature() {
       if (lastDistance !== null) {
         const distance = distanceTouches(touches[0], touches[1])
         const diff = distance - lastDistance
-        updateScale(diff / scalingSensitivity.mobileInverted * getProportionalScalingFactor())
+        updateScale(diff / ScalingSensitivity.mobileInverted * getProportionalScalingFactor())
         lastDistance = distance
       }
     }, isIOSLike ? {
@@ -55,9 +56,38 @@ export function enableZoomingFeature() {
   }
 
   function enableCustomDesktopZoom() {
+    let isPinching = false;
+
     window.addEventListener('wheel', ({ deltaY }) => {
-      updateScale(-deltaY / scalingSensitivity.desktopInverted * getProportionalScalingFactor())
+      if (isPinching) return;
+      updateScale(-deltaY / ScalingSensitivity.desktopInverted * getProportionalScalingFactor())
     })
+
+    //#region Pinching for Desktop
+    // TODO implement GestureEvent type
+    let lastPinchScale = 0;
+    window.addEventListener('gesturestart', (event) => {
+      if (!touchEventHasScale(event as TouchEvent)) return;
+
+      event.preventDefault();
+      isPinching = true;
+    });
+    document.addEventListener('gesturechange', (event) => {
+      if (!touchEventHasScale(event as TouchEvent)) return;
+
+      // @ts-expect-error
+      const pinchScale = (event.scale - 1);
+      const differenceInPinchScale = pinchScale - lastPinchScale;
+      updateScale(differenceInPinchScale * ScalingSensitivity.desktopPinch * getProportionalScalingFactor());
+      lastPinchScale = pinchScale;
+    })
+    window.addEventListener('gestureend', (event) => {
+      if (!touchEventHasScale(event as TouchEvent)) return;
+
+      lastPinchScale = 0;
+      isPinching = false;
+    })
+    //#endregion
   }
 
   function updateScale(pos: number) {
