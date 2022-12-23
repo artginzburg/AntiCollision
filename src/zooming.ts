@@ -43,7 +43,7 @@ export function enableZoomingFeature() {
       if (lastDistance !== null) {
         const distance = distanceTouches(touches[0], touches[1])
         const diff = distance - lastDistance
-        updateScale(diff / scalingSensitivity.mobileInverted)
+        updateScale(diff / scalingSensitivity.mobileInverted * getProportionalScalingFactor())
         lastDistance = distance
       }
     }, isIOSLike ? {
