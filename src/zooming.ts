@@ -64,6 +64,7 @@ export function enableZoomingFeature() {
     })
 
     //#region Pinching for Desktop
+    // Does not work in Chrome. Tested in Safari.
     // TODO implement GestureEvent type
     let lastPinchScale = 0;
     window.addEventListener('gesturestart', (event) => {
