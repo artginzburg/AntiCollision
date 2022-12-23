@@ -311,18 +311,20 @@ function collide(collide_vec: Vector2, dist: number, minDist: number, current_ba
 
   if (settings.bounciness > 0) bounceOnCollision(collide_axe, minDist, current_ball, collider);
 
+  const collisionOverflowDistance = collide_axe.mul(0.5 * (minDist - dist));
+
   current_ball.position = current_ball.position.add(
-    collide_axe.mul(0.5 * (minDist - dist))
+    collisionOverflowDistance
   );
   collider.position = collider.position.sub(
-    collide_axe.mul(0.5 * (minDist - dist))
+    collisionOverflowDistance
   );
   if (!settings.useAntiCollisionBug) {
     current_ball.velocity = current_ball.velocity.add(
-      collide_axe.mul(0.5 * (minDist - dist))
+      collisionOverflowDistance
     );
     collider.velocity = collider.velocity.sub(
-      collide_axe.mul(0.5 * (minDist - dist))
+      collisionOverflowDistance
     );
   }
 }
