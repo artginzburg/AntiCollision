@@ -1,6 +1,7 @@
 import { addKeyListener } from './webUtils';
 import { EngineWithStats } from './modules/engine';
 import type { Engine } from './modules/engine';
+import { makeStatsDisplayVisibleBriefly } from './features/statsDisplay';
 
 export function enableEngineControls(engine: AnyEngine) {
   addKeyListener('KeyJ', getDecreaseSimulationSpeed(engine), true);
@@ -9,6 +10,7 @@ export function enableEngineControls(engine: AnyEngine) {
 
 function getDecreaseSimulationSpeed(engine: AnyEngine) {
   return () => {
+    makeStatsDisplayVisibleBriefly();
     engine.time_step = Math.min(600, engine.time_step * 1.1);
   };
 }
@@ -19,6 +21,7 @@ function getIncreaseSimulationSpeed(engine: AnyEngine) {
   const engineHasStats = engine instanceof EngineWithStats;
 
   return () => {
+    makeStatsDisplayVisibleBriefly();
     const new_time_step = engine.time_step * controlTimeStepMultiplier;
 
     if (engineHasStats) {

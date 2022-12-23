@@ -16,6 +16,17 @@ export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: num
   statsDisplay.innerText = stats.join('; ');
 }
 
+let statsDisplayHidingTimeout: number | undefined;
+/** @todo add an option to focus on a specific stat (darkening others) */
+export function makeStatsDisplayVisibleBriefly(hideAfter = 500) {
+  clearTimeout(statsDisplayHidingTimeout);
+
+  statsDisplay.style.opacity = '1';
+  statsDisplayHidingTimeout = setTimeout(() => {
+    statsDisplay.style.opacity = '';
+  }, hideAfter);
+}
+
 function percentageOf<T>(arr: T[], predicate: (value: T, index: number, array: T[]) => unknown) {
   return `${Math.round((arr.filter(predicate).length / arr.length) * 100)}%`;
 }
