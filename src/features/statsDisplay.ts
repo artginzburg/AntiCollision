@@ -5,6 +5,8 @@ import type { Ball } from '../ball';
 const statsDisplay: HTMLSpanElement = document.querySelector('#stats')!;
 
 export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: number, scale: number, balls: Ball[]) {
+  if (window.getComputedStyle(statsDisplay).opacity === '0') return;
+
   const stats = [
     `FPS: ${engine.getFPS()}`,
     `Speed: ${engine.getUPS()}${speedDownFactor === 1 ? '' : ` / ${speedDownFactor}`}`,
