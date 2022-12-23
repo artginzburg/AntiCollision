@@ -14,9 +14,6 @@ export function enableZoomingFeature() {
   let wheelPos = 0.1
 
   enableCustomDesktopZoom();
-
-  const isIOSLike = isDeviceIOSLike();
-
   enableCustomMobileZoom();
 
   function enableCustomMobileZoom() {
@@ -31,6 +28,8 @@ export function enableZoomingFeature() {
     window.addEventListener('touchend', () => {
       lastDistance = null
     })
+
+    const isIOSLike = isDeviceIOSLike();
 
     window.addEventListener('touchmove', (event) => {
       if (isIOSLike) {
