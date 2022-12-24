@@ -74,7 +74,11 @@ export class EngineWithStats extends Engine {
   private renderHistory: number[] = [];
   private maximumSpeedHistory: number[] = [];
 
-  /** How much renders happened in the last second of time. */
+  /**
+   * How much renders happened in the last second of time.
+   *
+   * @todo this method requires a lot of processing power. Simplify it. Can be tested by putting `engine.getFPS()` into some part of code that runs frequently. The recommended maximum UPS will drop significantly.
+   */
   getFPS() {
 
     this.renderHistory = this.renderHistory.filter(
