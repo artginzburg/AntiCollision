@@ -285,7 +285,34 @@ function updatePos(
     currentBall.position = currentBall.position.add(
       currentBall.velocity.mul(dt / speedDownFactorForUpdatePos)
     );
+
+    //#region Glitch-less Collision pt.1 — additional collision check specifically for updatePos.
+    //* This code essentially makes the simulation almost 100% accurate. Not sure if it's necessary for this particular simulation, but it's good having this issue mentioned and remembered.
+    // Without this code, the balls would move (update position) more frequently then they collide, hence sometimes they'll intersect each other for a short amount of time (very noticeable in slow motion).
+    // The reasons for this code to be commented out / hidden in experimental branch:
+    // 1. Calculating extra collisions requires extra processing power, so the maximum speed that the simulation can run at becomes lower.
+    // 2. It seems like the balls keep on intersecting anyway
+    for (const collider of ballsToUpdatePos) {
+      if (collider === currentBall) continue;
+
+      const onCollision = () => {
+        currentBall.stable = false;
+        collider.stable = false;
+      };
+      preventIntersection(currentBall, collider, onCollision);
+    }
+    //#endregion
   }
+
+  //#region Glitch-less Collision pt.2
+  // This part of code introduces a bug — the balls become green much faster then they should.
+  // for (const collider of ballsToUpdatePos) {
+  //   if (collider.stable) collider.stableCount++;
+  //   else collider.stableCount = 0;
+
+  //   updateBallStableScore(collider);
+  // }
+  //#endregion
 
   speedDownCounter--;
 }
