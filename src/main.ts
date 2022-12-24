@@ -128,8 +128,6 @@ enableEngineControls(engine);
 let center_of_mass: Vector2;
 
 function simulate(delta: DOMHighResTimeStamp): void {
-  updateStatsDisplay(engine, speedDownFactor, scale, balls);
-
   if (waitingSpeedFactor !== speedDownFactorGoal) {
     waitingSpeedFactor += speedDownFactorGoal - waitingSpeedFactor;
   }
@@ -180,6 +178,8 @@ function simulate(delta: DOMHighResTimeStamp): void {
   iterations++;
 }
 function render() {
+  updateStatsDisplay(engine, speedDownFactor, scale, balls);
+
   synchronizeRenderingContext(ctx);
   synchronizeRenderingContext(ctxTraces);
 

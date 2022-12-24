@@ -4,15 +4,8 @@ import type { Ball } from '../ball';
 
 const statsDisplay: HTMLSpanElement = document.querySelector('#stats')!;
 
-let statsDisplayLastUpdated = 0;
-const maxStatsDisplayUpdatesPerSecond = 30;
-const minTimeDifferenceToUpdate = 1 / maxStatsDisplayUpdatesPerSecond * 1000;
 export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: number, scale: number, balls: Ball[]) {
   if (window.getComputedStyle(statsDisplay).opacity === '0') return;
-
-  const newStatsDisplayLastUpdated = Date.now();
-  const timeDifferenceBetweenUpdates = newStatsDisplayLastUpdated - statsDisplayLastUpdated;
-  if (timeDifferenceBetweenUpdates < minTimeDifferenceToUpdate) return;
 
   const stats = [
     `FPS: ${engine.getFPS()}`,
@@ -23,8 +16,6 @@ export function updateStatsDisplay(engine: EngineWithStats, speedDownFactor: num
     `Recommended Maximum Speed: ${engine.getRecommendedMaximumUPS()}`
   ];
   statsDisplay.innerText = stats.join('; ');
-
-  statsDisplayLastUpdated = newStatsDisplayLastUpdated;
 }
 
 let statsDisplayHidingTimeout: number | undefined;
