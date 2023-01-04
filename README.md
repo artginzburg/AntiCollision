@@ -36,5 +36,4 @@ Mobile
 
 ## Future features
 
-- Move around by dragging with the mouse
 - Sounds
