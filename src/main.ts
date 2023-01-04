@@ -15,6 +15,7 @@ import { EngineWithStats } from './modules/engine';
 import { bounceOnCollision } from './features/bounciness';
 import { enableEngineControls } from './controls';
 import { updateStatsDisplay } from './features/statsDisplay';
+import { dragStart, enableDraggingFeature, lastDraggedTo, updateLastDraggedTo } from './features/dragging';
 
 const $canvas: HTMLCanvasElement = document.querySelector('#balls')!;
 const ctx = $canvas.getContext('2d')!;
@@ -118,6 +119,8 @@ const mousePos = { x: 0, y: 0 };
 window.addEventListener('mousemove', (event) => {
   mousePos.x = event.x;
   mousePos.y = event.y;
+
+  updateLastDraggedTo(event);
 });
 
 const engine = new EngineWithStats(simulate, render, 1000/60);
@@ -126,6 +129,12 @@ engine.start();
 enableEngineControls(engine);
 
 let center_of_mass: Vector2;
+
+enableDraggingFeature();
+
+window.addEventListener('mousedown', () => {
+  dragStart(center_of_mass);
+});
 
 function simulate(delta: DOMHighResTimeStamp): void {
   if (waitingSpeedFactor !== speedDownFactorGoal) {
@@ -206,7 +215,7 @@ function synchronizeRenderingContext(context: CanvasRenderingContext2D) {
 }
 
 function getCtxTranslation() {
-  return calculateFocus(focusedBall ? focusedBall.position : center_of_mass);
+  return calculateFocus(focusedBall?.position ?? lastDraggedTo ?? center_of_mass);
 }
 function calculateFocus(position: Vector2Literal) {
   return [
