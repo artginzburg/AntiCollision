@@ -21,6 +21,7 @@ Mouse control
 
 - Follow a particular ball by clicking it.
 - Zoom into the simulation by scrolling.
+- Move around by dragging with the mouse.
 - Create new balls by right-clicking.
 
 > View stats by hovering over the top left corner of the screen.
