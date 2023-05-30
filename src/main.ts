@@ -174,9 +174,9 @@ function simulate(delta: DOMHighResTimeStamp): void {
       .mul(stable_ratio)
       .add(unstable_color.mul(1.0 - stable_ratio));
 
-    let r = b.r;
+    // let r = b.r;
 
-    if (speedDownFactor > 1) r = b.r;
+    // if (speedDownFactor > 1) r = b.r;
 
     center_of_mass = center_of_mass.add(b.position);
 
