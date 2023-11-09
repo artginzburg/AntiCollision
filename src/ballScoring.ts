@@ -1,4 +1,5 @@
 import type { Ball } from './ball';
+import { Vector3ColorTools } from './vector';
 
 // For usage inside the Scene (such class is not constructed yet, but it would be logically called that).
 
@@ -27,7 +28,7 @@ export function handleNewBallStableScore(balls: Ball[], newBall: Ball) {
 export function drawBallStableScore(ctx: CanvasRenderingContext2D, ball: Ball) {
   if (!ball.hasLeastStableScore) return;
 
-  ctx.fillStyle = '#fffd';
+  ctx.fillStyle = Vector3ColorTools.invert(ball.color!).toRGBA(0.87); // 0.87 = HEX d
 
   ctx.beginPath();
   ctx.arc(ball.position.x, ball.position.y, ball.r / 5, 0, Math.PI * 2);

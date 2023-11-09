@@ -3,7 +3,7 @@ import { isDeviceIOSLike, preventNativeMobileZoom, touchEventHasScale } from './
 export let scale = 0.35
 
 const minScale = 0.1
-const maxScale = 3
+export const maxScale = 3
 
 namespace ScalingSensitivity {
   export const desktopInverted = 5000;

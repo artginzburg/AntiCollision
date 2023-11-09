@@ -1,8 +1,9 @@
 import { getRange } from './random';
 import { settings } from './settings';
-import { stable_color_rgb } from './shared';
-import { Vector2, Vector3 } from './vector';
+import { unstable_color_rgb } from './shared';
+import { Vector2, Vector3, Vector3ColorTools } from './vector';
 import { drawBallStableScore } from './ballScoring';
+import { maxScale, scale } from './zooming';
 
 const max_history = 100
 
@@ -75,7 +76,8 @@ export class Ball {
   }
 
   private drawStroke(ctx: CanvasRenderingContext2D) {
-    ctx.strokeStyle = '#000a'
+    ctx.lineWidth = Math.min(maxScale / scale, 10); // min(from 1 to 30, 10)
+    ctx.strokeStyle = Vector3ColorTools.invert(this.color!).toRGBA(0.67) // 0.67 = HEX a
     ctx.stroke()
   }
 
@@ -103,7 +105,7 @@ export class Ball {
   private applyTraceColor(ctx: CanvasRenderingContext2D, farthestTracePointPosition: Vector2) {
     const gradient = ctx.createLinearGradient(farthestTracePointPosition.x, farthestTracePointPosition.y, this.position.x, this.position.y);
     gradient.addColorStop(0, 'transparent');
-    gradient.addColorStop(1, stable_color_rgb);
+    gradient.addColorStop(1, unstable_color_rgb);
 
     ctx.strokeStyle = gradient; // Trail color
     ctx.stroke();

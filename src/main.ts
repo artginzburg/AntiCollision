@@ -199,7 +199,7 @@ function render() {
 }
 
 function drawCenterOfMass(context: CanvasRenderingContext2D) {
-  context.fillStyle = 'purple'
+  context.fillStyle = '#ff0066'
   context.beginPath()
   context.arc(center_of_mass.x, center_of_mass.y, 10, 0, Math.PI * 2)
   context.fill()

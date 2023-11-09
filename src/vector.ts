@@ -26,6 +26,13 @@ export class Vector3 {
   }
 }
 
+export namespace Vector3ColorTools {
+  const maxColor = new Vector3(255, 255, 255);
+  export function invert(v: Vector3) {
+    return maxColor.sub(v);
+  }
+}
+
 export class Vector2 {
   constructor(readonly x: number, readonly y: number) {}
 
